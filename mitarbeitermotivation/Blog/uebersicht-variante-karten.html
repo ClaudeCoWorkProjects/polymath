@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog – Personal geht anders.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f3f3;--card:#fff;--line:#e0e0e0;--ink:#000;--soft:#3d3d3d;--mute:#6b6b6b;--blue:#1d9bf0;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{width:min(1040px,100% - 48px);margin-inline:auto}
+header.top{position:sticky;top:0;z-index:20;background:rgba(243,243,243,.92);backdrop-filter:blur(10px)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
+nav{display:flex;gap:32px}
+nav a{font-size:.875rem;color:var(--soft);text-decoration:none}
+nav a:hover{color:var(--ink)}
+@media(max-width:640px){nav{display:none}}
+
+.intro{padding:clamp(24px,5vw,56px) 0 clamp(24px,4vw,40px)}
+.kicker{color:var(--mute);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(2rem,6vw,3.75rem);line-height:1.05;letter-spacing:-.035em;font-weight:700;max-width:14ch}
+.intro p{margin-top:20px;font-size:1.125rem;color:var(--soft);max-width:38ch}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding-bottom:clamp(48px,8vw,96px)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.grid{grid-template-columns:1fr;gap:16px}}
+
+.post{display:flex;flex-direction:column;background:var(--card);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);transition:transform .45s cubic-bezier(.22,.8,.2,1),box-shadow .45s ease}
+.post:hover,.post:focus-visible{transform:translateY(-6px);box-shadow:0 14px 40px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.05)}
+.post:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.thumb{aspect-ratio:16/10;overflow:hidden;background:linear-gradient(135deg,#6b6b6b,#3a3a3a)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.22,.8,.2,1)}
+.post:hover .thumb img{transform:scale(1.04)}
+.thumb.alt1{background:linear-gradient(135deg,#8a8a8a,#555)}
+.thumb.alt2{background:linear-gradient(135deg,#4a4a4a,#222)}
+.info{display:flex;flex-direction:column;gap:10px;padding:22px 22px 24px;flex:1}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.post h2{font-size:1.25rem;line-height:1.25;letter-spacing:-.02em;font-weight:700}
+.post p{font-size:.9375rem;color:var(--soft);line-height:1.45}
+.more{margin-top:auto;padding-top:6px;font-size:.875rem;color:var(--ink)}
+.more span{display:inline-block;transition:transform .3s}
+.post:hover .more span{transform:translateX(5px)}
+.post.ph{opacity:.55}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#">Personal geht anders.</a>
+  <nav><a href="#">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="#">Kontakt</a></nav>
+</div></header>
+
+<section class="intro"><div class="wrap">
+  <div class="kicker">Blog</div>
+  <h1>Alle Beiträge auf einen Blick.</h1>
+  <p>Kurz gelesen, lange gewirkt.</p>
+</div></section>
+
+<main class="wrap"><div class="grid">
+
+  <a class="post" href="mitarbeitermotivation.html">
+    <div class="thumb"><img src="../hero.webp" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="meta"><span>Motivation</span><span>4 Min.</span></div>
+      <h2>Menschen motivieren: Unmöglich, und doch ganz leicht.</h2>
+      <p>Warum Begeisterung vor Motivation kommt.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+  <a class="post" href="betriebsklimaoptimierung.html">
+    <div class="thumb"><img src="../hero-klima.jpg" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="meta"><span>Betriebsklima</span><span>4 Min.</span></div>
+      <h2>Erst wohlfühlen. Dann mehr Leisten.</h2>
+      <p>Warum das Klima im Team über die Leistung entscheidet.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+  <a class="post" href="performancesteigerung.html">
+    <div class="thumb"><img src="../hero-performance.jpg" alt="" loading="lazy"></div>
+    <div class="info">
+      <div class="meta"><span>Performance</span><span>2 Min.</span></div>
+      <h2>Es geht immer mehr, wenn man weiß wie.</h2>
+      <p>Wo das ungenutzte Potenzial in Ihrem Team liegt.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+  <a class="post ph" href="#">
+    <div class="thumb alt1"></div>
+    <div class="info">
+      <div class="meta"><span>Platzhalter</span><span>3 Min.</span></div>
+      <h2>Platzhalter für den vierten Beitrag</h2>
+      <p>Hier steht später der Anreißer.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+  <a class="post ph" href="#">
+    <div class="thumb alt2"></div>
+    <div class="info">
+      <div class="meta"><span>Platzhalter</span><span>5 Min.</span></div>
+      <h2>Platzhalter für den fünften Beitrag mit etwas längerem Titel</h2>
+      <p>Hier steht später der Anreißer.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+  <a class="post ph" href="#">
+    <div class="thumb"></div>
+    <div class="info">
+      <div class="meta"><span>Platzhalter</span><span>4 Min.</span></div>
+      <h2>Platzhalter für den sechsten Beitrag</h2>
+      <p>Hier steht später der Anreißer.</p>
+      <div class="more">Lesen <span>→</span></div>
+    </div>
+  </a>
+
+</div></main>
+</body>
+</html>

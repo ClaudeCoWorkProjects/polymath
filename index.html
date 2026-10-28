@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Floating Cube</title>
+<style>
+  :root { --bg:#ffffff; --fg:#111111; --muted:#666666; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { height:100%; background:var(--bg); color:var(--fg); font-family:system-ui, sans-serif; }
+  .hero {
+    min-height:100%; display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:2rem;
+    padding:4rem 5vw;
+    background:var(--bg);
+  }
+  .copy h1 { font-family:Georgia, serif; font-weight:400; font-size:clamp(3rem,7vw,6rem); line-height:.95; letter-spacing:-.03em; }
+  .copy .subhead { font-family:Georgia, serif; color:var(--muted); margin-top:1.25rem; font-size:clamp(1.4rem,2.4vw,2rem); line-height:1.2; letter-spacing:-.01em; }
+  /* linke Spalte so hoch wie der Würfel-Bereich, Inhalt dazu vertikal zentriert */
+  .copy { aspect-ratio:1/1; max-height:80vh; display:flex; flex-direction:column; justify-content:center; }
+
+  /* Themenweiche */
+  .weiche { margin-top:2.25rem; max-width:32rem; }
+  .weiche textarea { width:100%; min-height:4.5rem; resize:vertical; font:inherit; font-size:1rem; padding:.7rem .85rem;
+                     background:#fff; color:#111; border:1px solid #d4d4d4; border-radius:12px; transition:border-color .2s; }
+  .weiche textarea:focus { outline:none; border-color:#888; }
+  .weiche textarea::placeholder { color:#999; }
+  .weiche-actions { display:flex; align-items:center; gap:1.1rem; flex-wrap:wrap; margin-top:.9rem; }
+  #weiche-go { background:#111; color:#fff; border:1px solid #111; border-radius:999px; padding:.6rem 1.4rem; font:inherit; font-size:.9rem;
+               cursor:pointer; transition:opacity .2s; }
+  #weiche-go:disabled { opacity:.3; cursor:default; }
+  #weiche-contact { color:var(--muted); font-size:.88rem; text-decoration:underline; text-underline-offset:3px; }
+  #weiche-contact:hover { color:var(--fg); }
+
+  /* === Cube-Container: nur dieser Block wird für die Website gebraucht === */
+  #cube-stage { position:relative; width:100%; aspect-ratio:1/1; max-height:80vh; touch-action:none; cursor:grab; user-select:none; }
+  #cube-stage.dragging { cursor:grabbing; }
+  #cube-stage canvas { display:block; width:100%; height:100%; }
+  .cube-wrap { display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  #cube-shuffle { background:transparent; color:#444; border:1px solid #d4d4d4; border-radius:999px; padding:.55rem 1.4rem;
+                  font:inherit; font-size:.9rem; letter-spacing:.02em; cursor:pointer; transition:border-color .2s, color .2s, opacity .2s; }
+  #cube-shuffle:hover { color:#000; border-color:#888; }
+  #cube-shuffle:disabled { opacity:.35; cursor:default; }
+
+  /* Zähler, Eintrag, Bestenliste */
+  #cube-counter { color:#777; font-size:.85rem; font-variant-numeric:tabular-nums; min-height:1.2em; }
+  #cube-entry { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; justify-content:center; color:#333; font-size:.9rem; }
+  #cube-entry[hidden] { display:none; }
+  #cube-entry input { width:4.2em; background:#fff; color:#111; border:1px solid #ccc; border-radius:8px; padding:.45rem .5rem;
+                      font:inherit; font-size:1rem; letter-spacing:.3em; text-align:center; text-transform:uppercase; }
+  #cube-entry button { background:#111; color:#fff; border:1px solid #111; border-radius:8px; padding:.45rem .9rem; font:inherit; cursor:pointer; }
+  .cube-board { width:100%; max-width:260px; }
+  .cube-board h3 { font-size:.75rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#888; margin-bottom:.5rem; text-align:center; }
+  #cube-highscores { list-style:none; padding:0; font-size:.88rem; font-variant-numeric:tabular-nums; }
+  #cube-highscores li { display:grid; grid-template-columns:1.8em 1fr auto; gap:.5rem; padding:.3rem .2rem; border-bottom:1px solid #ececec; color:#444; }
+  #cube-highscores li span:first-child { color:#aaa; }
+  #cube-highscores li.new { color:#000; font-weight:600; }
+  #cube-highscores li.empty { display:block; text-align:center; color:#aaa; border:0; }
+
+  @media (max-width:800px) { .hero { grid-template-columns:1fr; } .copy { aspect-ratio:auto; max-height:none; } }
+
+  /* S/W-Schalter */
+  #theme-toggle { position:fixed; top:16px; right:16px; z-index:10; display:flex; border:1px solid #d4d4d4; border-radius:999px; overflow:hidden;
+                  background:transparent; padding:0; font:inherit; font-size:.8rem; cursor:pointer; }
+  #theme-toggle span { padding:.4rem .8rem; color:#888; transition:background .2s, color .2s; }
+  #theme-toggle span.on { background:#111; color:#fff; }
+
+  /* Dunkles Thema */
+  :root[data-theme="dark"] { --bg:#050505; --fg:#ededed; --muted:#9a9a9a; }
+  [data-theme="dark"] .hero { background:radial-gradient(ellipse at 70% 30%, #161616 0%, #050505 60%); }
+  [data-theme="dark"] #theme-toggle { border-color:#2a2a2a; }
+  [data-theme="dark"] #theme-toggle span.on { background:#ededed; color:#000; }
+  [data-theme="dark"] #cube-shuffle { color:#bdbdbd; border-color:#2a2a2a; }
+  [data-theme="dark"] #cube-shuffle:hover { color:#fff; border-color:#555; }
+  [data-theme="dark"] #cube-counter { color:#8a8a8a; }
+  [data-theme="dark"] #cube-entry { color:#cfcfcf; }
+  [data-theme="dark"] #cube-entry input { background:#0d0d0d; color:#fff; border-color:#333; }
+  [data-theme="dark"] #cube-entry button { background:#1c1c1c; color:#eee; border-color:#333; }
+  [data-theme="dark"] .cube-board h3 { color:#6a6a6a; }
+  [data-theme="dark"] #cube-highscores li { border-bottom-color:#1a1a1a; color:#b5b5b5; }
+  [data-theme="dark"] #cube-highscores li span:first-child,
+  [data-theme="dark"] #cube-highscores li.empty { color:#555; }
+  [data-theme="dark"] #cube-highscores li.new { color:#fff; }
+  [data-theme="dark"] .weiche textarea { background:#0d0d0d; color:#eee; border-color:#2a2a2a; }
+  [data-theme="dark"] .weiche textarea:focus { border-color:#666; }
+  [data-theme="dark"] #weiche-go { background:#ededed; color:#000; border-color:#ededed; }
+</style>
+</head>
+<body>
+<button id="theme-toggle" type="button" aria-label="Farbschema wechseln"><span data-t="light">Weiß</span><span data-t="dark">Schwarz</span></button>
+<section class="hero">
+  <div class="copy">
+    <h1>Jedes Problem<br>ist lösbar.</h1>
+    <p class="subhead">Welches ist Ihres?</p>
+    <form class="weiche" id="weiche">
+      <textarea id="weiche-input" placeholder="Wenige Worte reichen" aria-label="Ihr Problem in wenigen Worten"></textarea>
+      <div class="weiche-actions">
+        <button type="submit" id="weiche-go" disabled>Weiterleiten →</button>
+        <a id="weiche-contact" href="/kontakt">Nachricht senden/Termin vereinbaren</a>
+      </div>
+    </form>
+  </div>
+  <div class="cube-wrap">
+    <div id="cube-stage"></div>
+    <button id="cube-shuffle" type="button">Mischen</button>
+    <div id="cube-counter"></div>
+    <form id="cube-entry" hidden>
+      <span id="cube-entry-text"></span>
+      <input id="cube-entry-name" maxlength="3" autocomplete="off" aria-label="Kürzel (3 Buchstaben)" placeholder="AAA" required>
+      <button type="submit">Eintragen</button>
+    </form>
+    <div class="cube-board">
+      <h3>Bestenliste</h3>
+      <ol id="cube-highscores"></ol>
+    </div>
+  </div>
+</section>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const stage = document.getElementById('cube-stage');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- Renderer / Szene ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.9;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.35;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+camera.position.set(0, 0, 12);
+
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-4, 6, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffffff, 1.2); rim.position.set(5, -2, -4); scene.add(rim);
+const ambient = new THREE.AmbientLight(0xffffff, 0.35); scene.add(ambient);   // Stärke je nach Thema, siehe setTheme
+
+// ---------- Prozedurale Texturen ----------
+function canvasTex(size, draw) {
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  draw(c.getContext('2d'), size);
+  const t = new THREE.CanvasTexture(c); t.anisotropy = 8; return t;
+}
+const noise = canvasTex(256, (g, s) => {
+  const d = g.createImageData(s, s);
+  for (let i = 0; i < d.data.length; i += 4) { const v = 150 + Math.random() * 105; d.data[i] = d.data[i+1] = d.data[i+2] = v; d.data[i+3] = 255; }
+  g.putImageData(d, 0, 0);
+});
+const perf = canvasTex(512, (g, s) => {
+  g.fillStyle = '#fff'; g.fillRect(0, 0, s, s); g.fillStyle = '#000';
+  const n = 22, step = s / n;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { g.beginPath(); g.arc((x + .5) * step, (y + .5) * step, step * .28, 0, Math.PI * 2); g.fill(); }
+});
+perf.colorSpace = THREE.SRGBColorSpace;
+
+// ---------- Materialien: je ein Satz für Weiß und Schwarz ----------
+const MAT_SETS = {
+  light: {
+    matte: new THREE.MeshPhysicalMaterial({ color:0xd9d9d9, roughness:.8, metalness:0, roughnessMap:noise }),
+    satin: new THREE.MeshPhysicalMaterial({ color:0xe6e6e6, roughness:.4, metalness:0, clearcoat:.6, clearcoatRoughness:.3 }),
+    perf:  new THREE.MeshPhysicalMaterial({ color:0xd0d0d0, roughness:.6, metalness:.1, map:perf, bumpMap:perf, bumpScale:1 }),
+    grey:  new THREE.MeshPhysicalMaterial({ color:0xc4c4c4, roughness:.9, metalness:0, roughnessMap:noise, bumpMap:noise, bumpScale:.5 }),
+    light: new THREE.MeshPhysicalMaterial({ color:0xf2f2f2, roughness:.95, bumpMap:noise, bumpScale:.8 }),
+    core:  new THREE.MeshStandardMaterial({ color:0x8a8a8a, roughness:1 }),
+  },
+  dark: {
+    matte: new THREE.MeshPhysicalMaterial({ color:0x0c0c0c, roughness:.75, metalness:.1, roughnessMap:noise }),
+    satin: new THREE.MeshPhysicalMaterial({ color:0x151515, roughness:.4, metalness:.3, clearcoat:.5, clearcoatRoughness:.4 }),
+    perf:  new THREE.MeshPhysicalMaterial({ color:0x1a1a1a, roughness:.6, metalness:.4, map:perf, bumpMap:perf, bumpScale:1 }),
+    grey:  new THREE.MeshPhysicalMaterial({ color:0x3a3a3a, roughness:.9, metalness:.05, roughnessMap:noise, bumpMap:noise, bumpScale:.5 }),
+    light: new THREE.MeshPhysicalMaterial({ color:0x8c8c8c, roughness:.95, bumpMap:noise, bumpScale:.8 }),
+    core:  new THREE.MeshStandardMaterial({ color:0x020202, roughness:1 }),
+  },
+};
+const M = MAT_SETS.light;
+// fester Seed -> immer gleiches Muster
+let seed = 7;
+const rand = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const pick = () => { const r = rand(); return r < .35 ? 'matte' : r < .6 ? 'satin' : r < .8 ? 'perf' : r < .95 ? 'grey' : 'light'; };
+
+// ---------- Würfel ----------
+const floater = new THREE.Group(); scene.add(floater);
+const root = new THREE.Group(); floater.add(root);
+root.rotation.set(0.45, -0.6, 0.05);
+
+// ---------- Leuchtende Kreise: eine Farbe pro Würfelseite ----------
+const FACE_COLORS = [0xff3b5c, 0xff8a2b, 0xf5f5f5, 0xffd43b, 0x2bff88, 0x3b8bff]; // +x, -x, +y, -y, +z, -z
+const DIRS = [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
+const GLOW_STRENGTH = 0.9;          // Gesamthelligkeit der Kreise
+const uTime = { value: 0 };          // von allen Kreisen geteilt
+const uLevel = { value: 1 };         // gemeinsamer Helligkeitsfaktor (Aufleuchten / Erlöschen)
+const glowGeo = new THREE.PlaneGeometry(0.94, 0.94);
+const zAxis = new THREE.Vector3(0, 0, 1);
+const glowVert = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+const glowFrag = `
+  uniform float uTime, uSeed, uIntensity; uniform vec3 uColor; varying vec2 vUv;
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);
+    return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y); }
+  float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++){ v += a*noise(p); p *= 2.03; a *= 0.5; } return v; }
+  uniform float uSatLight, uSatDark, uLevel, uAdd, uRnd;
+  void main(){
+    vec2 p = vUv * 2.0 - 1.0;
+    float r = length(p), ang = atan(p.y, p.x);
+    float t = uTime * 0.35 + uSeed * 10.0;
+    bool dark = uAdd > 0.5;
+    // Farbe: Sättigung je Thema
+    vec3 c = mix(vec3(dot(uColor, vec3(0.299, 0.587, 0.114))), uColor, dark ? uSatDark : uSatLight);
+    // LED: kleiner Kern (dunkel etwas größer), enger Lichthof
+    float core = dark ? smoothstep(0.12, 0.04, r) : smoothstep(0.09, 0.025, r);
+    float halo = exp(-r * 11.0) * 0.55;
+    // Streulicht unter der Oberfläche: klein, wabert leicht
+    float edge = fbm(vec2(cos(ang), sin(ang)) * 1.5 + vec2(t, -t * 0.7) + uSeed);
+    float rr = r / (0.75 + 0.5 * edge);
+    float swirl = fbm(p * 4.0 + vec2(t * 1.3, t));
+    float diffuse = exp(-rr * rr * 14.0) * (0.15 + 0.45 * swirl);
+    float breathe = 0.8 + 0.2 * sin(uTime * 0.7 + uSeed * 6.283);
+    float spread = dark ? 0.12 : 1.0;                  // dunkles Thema: kaum Hof, nur kleiner Punkt
+    vec3 col = dark ? mix(c, vec3(1.0), core * 0.12) * core * 1.1    // dunkel: satter Farbpunkt
+                    : mix(c, vec3(1.0), core * 0.55) * core * 0.9;   // hell: weißlicher Kern
+    col += c * (halo + diffuse) * spread;
+    float var = dark ? 0.8 + 0.2 * uRnd : 0.55 + 0.45 * uRnd;        // Helligkeitsstreuung je Kreis
+    col *= breathe * uIntensity * var * uLevel * smoothstep(1.0, 0.6, r);
+    if (uAdd > 0.5) {
+      gl_FragColor = vec4(col, 1.0);                       // dunkler Würfel: Licht addieren
+    } else {
+      // heller Würfel: Farbe deckend auftragen (Addieren auf Weiß wäre unsichtbar)
+      float a = clamp(max(col.r, max(col.g, col.b)), 0.0, 1.0);
+      gl_FragColor = vec4(col / max(a, 1e-3), a);
+    }
+    #include <colorspace_fragment>
+  }`;
+const SAT_LIGHT = 0.4, SAT_DARK = 1.0;   // Sättigung je Thema: 0 = grau, 1 = volle Farbe
+function addDot(cubie, i) {
+  const n = new THREE.Vector3(...DIRS[i]);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uTime, uLevel, uAdd, uSatLight: { value: SAT_LIGHT }, uSatDark: { value: SAT_DARK }, uRnd: { value: Math.random() }, uColor: { value: new THREE.Color(FACE_COLORS[i]) }, uSeed: { value: Math.random() },
+                uIntensity: { value: GLOW_STRENGTH } },
+    vertexShader: glowVert, fragmentShader: glowFrag,
+    transparent: true, blending: THREE.NormalBlending, depthWrite: false,
+  });
+  const m = new THREE.Mesh(glowGeo, mat);
+  m.position.copy(n).multiplyScalar(0.486);
+  m.quaternion.setFromUnitVectors(zAxis, n);
+  cubie.add(m);                         // dreht sich mit dem Würfelstein mit
+  glowMats.push(mat);
+}
+const uAdd = { value: 0 };            // 1 = Licht addieren (dunkles Thema)
+const glowMats = [];
+
+const geo = new RoundedBoxGeometry(0.96, 0.96, 0.96, 4, 0.09);
+const cubies = [];
+for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) {
+  // BoxGeometry-Reihenfolge: +x, -x, +y, -y, +z, -z
+  const outer = [x === 1, x === -1, y === 1, y === -1, z === 1, z === -1];
+  const keys = outer.map(o => o ? pick() : 'core');
+  const m = new THREE.Mesh(geo, keys.map(k => M[k]));
+  m.userData.matKeys = keys;
+  m.position.set(x, y, z);
+  outer.forEach((o, i) => o && addDot(m, i));
+  root.add(m); cubies.push(m);
+}
+
+// ---------- S/W-Schalter: Seite + Würfel + Lichter ----------
+const THEME_KEY = 'cube-theme';
+const themeBtn = document.getElementById('theme-toggle');
+function setTheme(t) {
+  document.documentElement.dataset.theme = t;
+  const set = MAT_SETS[t];
+  cubies.forEach(c => { c.material = c.userData.matKeys.map(k => set[k]); });
+  ambient.intensity = t === 'dark' ? 0.08 : 0.35;
+  uAdd.value = t === 'dark' ? 1 : 0;
+  glowMats.forEach(mt => { mt.blending = t === 'dark' ? THREE.AdditiveBlending : THREE.NormalBlending; mt.needsUpdate = true; });
+  themeBtn.querySelectorAll('span').forEach(s => s.classList.toggle('on', s.dataset.t === t));
+  try { localStorage.setItem(THEME_KEY, t); } catch {}
+}
+themeBtn.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem(THEME_KEY) || 'light'; } catch {}
+setTheme(savedTheme);
+
+// ---------- Sound (Web Audio, synthetisch, keine Dateien) ----------
+const VOLUME = 0.5;                 // 0 = stumm, 1 = voll
+const HUM_GAIN = 0.6;               // Pegel des 40-Hz-Tons vor VOLUME
+let actx = null, master = null, spinGain = null;
+function initAudio() {
+  if (!actx) {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    master = actx.createGain(); master.gain.value = VOLUME; master.connect(actx.destination);
+    // Dauer-Oszillator für das Drehen des ganzen Würfels; Pegel folgt der Drehgeschwindigkeit
+    const o = actx.createOscillator(); o.frequency.value = 40;
+    spinGain = actx.createGain(); spinGain.gain.value = 0;
+    o.connect(spinGain).connect(master); o.start();
+  }
+  if (actx.state === 'suspended') actx.resume();
+}
+// 40-Hz-Sinus über die Dauer der Drehung, mit weicher Cosinus-Blende an beiden Enden (kein Knacken)
+function soundHum(len) {
+  if (!actx || actx.state !== 'running') return;
+  const t = actx.currentTime;
+  const fade = Math.min(0.1, len * 0.4);
+  const n = 64, up = new Float32Array(n), down = new Float32Array(n);
+  for (let i = 0; i < n; i++) { const v = 0.5 - 0.5 * Math.cos(Math.PI * i / (n - 1)); up[i] = v * HUM_GAIN; down[n - 1 - i] = v * HUM_GAIN; }
+  const o = actx.createOscillator(); o.frequency.value = 40;
+  const g = actx.createGain(); g.gain.value = 0;
+  g.gain.setValueCurveAtTime(up, t, fade);
+  g.gain.setValueCurveAtTime(down, t + len - fade, fade);
+  o.connect(g).connect(master);
+  o.start(t); o.stop(t + len + 0.02);
+}
+
+// ---------- Ebenen-Drehung ----------
+const pivot = new THREE.Object3D(); root.add(pivot);
+const AX = ['x', 'y', 'z'];
+const queue = []; let turn = null;
+const m4 = new THREE.Matrix4();
+
+function snap(c) {
+  c.position.set(Math.round(c.position.x), Math.round(c.position.y), Math.round(c.position.z));
+  m4.makeRotationFromQuaternion(c.quaternion);
+  for (let i = 0; i < 16; i++) m4.elements[i] = Math.round(m4.elements[i]);
+  c.quaternion.setFromRotationMatrix(m4);
+}
+function startTurn(mv) {
+  pivot.rotation.set(0, 0, 0); pivot.updateMatrixWorld();
+  mv.members = cubies.filter(c => Math.round(c.position[AX[mv.axis]]) === mv.layer);
+  mv.members.forEach(c => pivot.attach(c));
+  mv.t0 = performance.now(); mv.dur = mv.fast ? 110 : 320; turn = mv;
+  soundHum(mv.dur / 1000);
+  if (!mv.fast && run) { run.moves++; showCounter(); }                           // nur eigene Züge zählen
+  if (lightsOff) { lightsOff = false; animateLevel([[0, uLevel.value], [900, 1]]); }   // Lichter gehen wieder an
+}
+const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+function updateTurn(now) {
+  if (!turn) { if (queue.length) startTurn(queue.shift()); return; }
+  const k = Math.min(1, (now - turn.t0) / turn.dur);
+  pivot.rotation[AX[turn.axis]] = turn.angle * ease(k);
+  if (k === 1) {
+    pivot.updateMatrixWorld();
+    turn.members.forEach(c => { root.attach(c); snap(c); });
+    const endShuffle = turn.endShuffle;
+    pivot.rotation.set(0, 0, 0); turn = null;
+    if (endShuffle) startRun();
+    if (!queue.length) afterMoves();
+  }
+}
+
+// ---------- Lösung erkennen ----------
+// gelöst = auf jeder der 6 Seiten zeigen alle 9 Steine dieselbe Ursprungsfarbe
+const tmpV = new THREE.Vector3(), invQ = new THREE.Quaternion();
+function isSolved() {
+  for (const dir of DIRS) {
+    const d = new THREE.Vector3(...dir); let ref = -1;
+    for (const c of cubies) {
+      if (Math.round(c.position.dot(d)) !== 1) continue;
+      tmpV.copy(d).applyQuaternion(invQ.copy(c.quaternion).invert());
+      const ax = dominant(tmpV), idx = ax * 2 + (tmpV.getComponent(ax) > 0 ? 0 : 1);
+      if (ref < 0) ref = idx; else if (idx !== ref) return false;
+    }
+  }
+  return true;
+}
+let armed = false;                    // erst nach einem ungelösten Zustand kann „gelöst“ gefeiert werden
+function afterMoves() {
+  shuffleBtn.disabled = false;
+  if (!isSolved()) { armed = true; return; }
+  if (armed) { armed = false; celebrate(); if (run && run.moves > 0) finishRun(); }
+}
+
+// ---------- Lichter: Aufleuchten und Erlöschen ----------
+let levelKeys = null, levelT0 = 0, lightsOff = false;
+function animateLevel(keys) { levelKeys = keys; levelT0 = performance.now(); }   // keys: [[ms, wert], ...]
+function updateLevel(now) {
+  if (!levelKeys) return;
+  const e = now - levelT0, last = levelKeys[levelKeys.length - 1];
+  let v = last[1];
+  for (let i = 1; i < levelKeys.length; i++) {
+    if (e < levelKeys[i][0]) {
+      const [t0, v0] = levelKeys[i - 1], [t1, v1] = levelKeys[i], k = (e - t0) / (t1 - t0);
+      v = v0 + (v1 - v0) * k * k * (3 - 2 * k); break;
+    }
+  }
+  uLevel.value = v;
+  if (e >= last[0]) levelKeys = null;
+}
+function celebrate() {
+  lightsOff = true;
+  animateLevel([[0, uLevel.value], [250, 3.2], [650, 3.2], [2400, 0]]);   // aufleuchten, halten, erlöschen
+}
+
+// ---------- Mischen ----------
+const shuffleBtn = document.getElementById('cube-shuffle');
+shuffleBtn.addEventListener('click', () => {
+  if (turn || queue.length) return;
+  initAudio();
+  shuffleBtn.disabled = true;
+  let prev = -1;
+  for (let i = 0; i < 22; i++) {
+    let axis; do { axis = Math.floor(Math.random() * 3); } while (axis === prev);   // nie zweimal dieselbe Achse hintereinander
+    prev = axis;
+    queue.push({ axis, layer: Math.floor(Math.random() * 3) - 1, angle: (Math.random() < .5 ? 1 : -1) * Math.PI / 2, fast: true });
+  }
+  queue[queue.length - 1].endShuffle = true;
+  run = null; entryForm.hidden = true; counterEl.textContent = '';
+});
+
+// ---------- Züge zählen + Bestenliste (Testversion: nur lokal im Browser gespeichert) ----------
+const HS_KEY = 'cube-highscores', HS_MAX = 10;
+const counterEl = document.getElementById('cube-counter');
+const entryForm = document.getElementById('cube-entry');
+const entryText = document.getElementById('cube-entry-text');
+const entryName = document.getElementById('cube-entry-name');
+const boardEl = document.getElementById('cube-highscores');
+let run = null;                       // läuft nach dem Mischen: { moves }
+let pendingMoves = 0, memScores = [];
+
+function loadScores() {
+  try { return JSON.parse(localStorage.getItem(HS_KEY)) || []; } catch { return memScores; }
+}
+function saveScores(list) {
+  memScores = list;
+  try { localStorage.setItem(HS_KEY, JSON.stringify(list)); } catch { /* Speicher gesperrt: nur für diese Sitzung */ }
+}
+function renderBoard(highlight) {
+  const list = loadScores();
+  boardEl.innerHTML = '';
+  if (!list.length) { boardEl.innerHTML = '<li class="empty">Noch keine Einträge</li>'; return; }
+  list.forEach((s, i) => {
+    const li = document.createElement('li');
+    if (s.date === highlight) li.className = 'new';
+    li.innerHTML = `<span>${i + 1}.</span><span></span><span>${s.moves} Züge</span>`;
+    li.children[1].textContent = s.name;              // Text, nie HTML
+    boardEl.appendChild(li);
+  });
+}
+const showCounter = () => { counterEl.textContent = `Züge: ${run.moves}`; };
+function startRun() { run = { moves: 0 }; showCounter(); }
+function finishRun() {
+  pendingMoves = run.moves; run = null;
+  const list = loadScores();
+  const qualifies = list.length < HS_MAX || pendingMoves < list[list.length - 1].moves;
+  counterEl.textContent = `Gelöst in ${pendingMoves} Zügen`;
+  if (!qualifies) return;
+  entryText.textContent = 'Neuer Eintrag – dein Kürzel:';
+  entryName.value = ''; entryForm.hidden = false; entryName.focus({ preventScroll: true });
+}
+entryName.addEventListener('input', () => {
+  entryName.value = entryName.value.toUpperCase().replace(/[^A-ZÄÖÜ]/g, '').slice(0, 3);
+});
+entryForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = entryName.value.trim();
+  if (!name) return;
+  const date = Date.now();
+  const list = loadScores();
+  list.push({ name, moves: pendingMoves, date });
+  list.sort((a, b) => a.moves - b.moves || a.date - b.date);   // weniger Züge vorn, bei Gleichstand der Ältere
+  saveScores(list.slice(0, HS_MAX));
+  entryForm.hidden = true;
+  renderBoard(date);
+});
+renderBoard();
+
+// ---------- Interaktion ----------
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const axes = [new THREE.Vector3(1,0,0), new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,1)];
+const tmpQ = new THREE.Quaternion();
+const vel = new THREE.Vector2();
+let drag = null;
+
+const dominant = v => { const a = [Math.abs(v.x), Math.abs(v.y), Math.abs(v.z)]; return a.indexOf(Math.max(...a)); };
+function toScreen(pLocal) {
+  const p = root.localToWorld(pLocal.clone()).project(camera);
+  return new THREE.Vector2(p.x * stage.clientWidth / 2, -p.y * stage.clientHeight / 2);
+}
+let spinAccum = 0;                                 // Pixel Drehung seit letztem Frame
+function rotateView(dx, dy) {
+  spinAccum += Math.hypot(dx, dy);
+  const k = 0.006;
+  root.quaternion.premultiply(tmpQ.setFromAxisAngle(axes[1], dx * k));
+  root.quaternion.premultiply(tmpQ.setFromAxisAngle(axes[0], dy * k));
+}
+
+stage.addEventListener('pointerdown', e => {
+  initAudio();                                    // Browser erlauben Audio erst nach Nutzer-Geste
+  stage.setPointerCapture(e.pointerId);
+  stage.classList.add('dragging');
+  const r = stage.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObjects(cubies, false)[0];
+  vel.set(0, 0);
+  if (hit) {
+    if (turn) { drag = null; return; }            // während einer Drehung keine neue Eingabe
+    const rootQinv = root.getWorldQuaternion(new THREE.Quaternion()).invert();
+    const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld).applyQuaternion(rootQinv);
+    drag = { mode:'layer', x0:e.clientX, y0:e.clientY, p:root.worldToLocal(hit.point.clone()),
+             nAxis:dominant(n), nSign:Math.sign(n.getComponent(dominant(n))), cubie:hit.object, done:false };
+  } else {
+    drag = { mode:'view', x:e.clientX, y:e.clientY };
+  }
+});
+
+stage.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (drag.mode === 'view') {
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    rotateView(dx, dy); vel.set(dx, dy);
+    return;
+  }
+  if (drag.done) return;
+  const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0, len = Math.hypot(dx, dy);
+  if (len < 10) return;
+  // Achse wählen, deren Bewegungsrichtung am besten zur Mausbewegung passt
+  let best = null;
+  for (let i = 0; i < 3; i++) {
+    if (i === drag.nAxis) continue;
+    const sv = toScreen(drag.p.clone().applyAxisAngle(axes[i], 0.15)).sub(toScreen(drag.p));
+    const l = sv.length(); if (l < 1e-4) continue;
+    const d = (sv.x * dx + sv.y * dy) / (l * len);
+    if (!best || Math.abs(d) > Math.abs(best.d)) best = { i, d };
+  }
+  if (best) queue.push({ axis:best.i, layer:Math.round(drag.cubie.position.getComponent(best.i)), angle:Math.sign(best.d) * Math.PI / 2 });
+  drag.done = true;
+});
+
+function endDrag() {
+  if (drag && drag.mode === 'layer' && !drag.done) {
+    // Klick: angeklickte Seite im Uhrzeigersinn drehen
+    queue.push({ axis:drag.nAxis, layer:drag.nSign, angle:-drag.nSign * Math.PI / 2 });
+  }
+  drag = null; stage.classList.remove('dragging');
+}
+stage.addEventListener('pointerup', endDrag);
+stage.addEventListener('pointercancel', endDrag);
+
+// ---------- Größe / Sichtbarkeit ----------
+new ResizeObserver(() => {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}).observe(stage);
+
+let visible = true;
+new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(stage);
+
+// ---------- Loop ----------
+renderer.setAnimationLoop(now => {
+  if (!visible) { if (spinGain) spinGain.gain.setTargetAtTime(0, actx.currentTime, 0.06); return; }
+  const t = now / 1000;
+  if (!reduceMotion) {
+    uTime.value = t;
+    floater.position.y = Math.sin(t * 0.8) * 0.12;
+    floater.rotation.z = Math.sin(t * 0.5) * 0.03;
+    floater.rotation.x = Math.sin(t * 0.6) * 0.02;
+  }
+  if (!drag || drag.mode !== 'view') {
+    if (vel.lengthSq() > 0.01) { rotateView(vel.x, vel.y); vel.multiplyScalar(0.92); }
+  }
+  if (spinGain) {
+    // weich nachgeführt (Zeitkonstante 60 ms) -> kein Knacken beim An- und Abschwellen
+    spinGain.gain.setTargetAtTime(Math.min(1, spinAccum / 20) * HUM_GAIN, actx.currentTime, 0.06);
+  }
+  spinAccum = 0;
+  updateTurn(now);
+  updateLevel(now);
+  renderer.render(scene, camera);
+});
+</script>
+<script>
+// ---------- Themenweiche (aus Artifact „Themenweiche“): Schlagwörter -> Zielseite ----------
+// Zielseiten sind noch zu erstellen.
+const WEICHE_TOPICS = [
+  { label: "Unternehmensnachfolge", url: "/nachfolge",
+    keywords: ["nachfolge","nachfolger","übergabe","übergeben","verkauf","verkaufen","käufer","übernehmen","übernahme","ruhestand","aufhören","weitermachen","fortführung","weiterführt","weiterführen"] },
+  { label: "Personalkosten", url: "/teamperformance",
+    keywords: ["team","mitarbeiter","motivation","leistung","personalkosten","personal","fluktuation","produktivität","unmotiviert","künd","gehalt","gehälter"] },
+  { label: "Strategische Beratung", url: "/strategieberatung",
+    keywords: ["strategie","berater","beratung","sparringspartner","entscheidung","entscheidungen","wachstum","positionierung","planung"] },
+];
+(() => {
+  const form = document.getElementById('weiche'), input = document.getElementById('weiche-input'), go = document.getElementById('weiche-go');
+  let match = null;
+  input.addEventListener('input', () => {
+    const t = input.value.toLowerCase();
+    const best = WEICHE_TOPICS.map(tp => ({ tp, score: tp.keywords.filter(k => t.includes(k)).length }))
+                              .sort((a, b) => b.score - a.score)[0];
+    match = t.trim() && best.score > 0 ? best.tp : null;
+    go.disabled = !match;
+    go.textContent = match ? `Weiterleiten → ${match.label}` : 'Weiterleiten →';
+  });
+  form.addEventListener('submit', e => { e.preventDefault(); if (match) location.href = match.url; });
+})();
+</script>
+</body>
+</html>

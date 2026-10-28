@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test: Ring zu Zahnrad mit echten Texturen</title>
+<style>
+html,body{margin:0;background:#fff;color:#000;font-family:Inter,system-ui,sans-serif}
+#wrap{max-width:1100px;margin:0 auto;padding:16px}
+canvas{width:100%;height:min(70vh,640px);display:block;touch-action:none;cursor:grab}
+#hint{position:absolute;left:0;right:0;bottom:64px;text-align:center;font-size:13px;color:#777;letter-spacing:.04em;pointer-events:none;transition:opacity .6s}
+#st{position:absolute;left:0;right:0;top:46%;text-align:center;font-size:14px;color:#666}
+.ctl{display:flex;align-items:center;gap:12px;margin:10px 0 0;font-size:13px;color:#555;flex-wrap:wrap}
+.ctl input[type=range]{flex:1;min-width:140px}
+.ctl label{display:flex;gap:6px;align-items:center}
+</style>
+</head>
+<body>
+<div id="wrap" style="position:relative">
+<canvas id="c"></canvas>
+<div id="hint">Zum Umsehen ziehen</div>
+<div id="st">Lade Texturen und berechne Verformung …</div>
+<div class="ctl">
+<button id="au" style="display:none">Auto-Drehung: aus</button><span>Ring</span><input type="range" id="s" min="0" max="100" value="0" step="1"><span>Zahnrad</span>
+<label><input type="checkbox" id="wf">Gitter</label>
+<label>Metall <select id="mt"><option value="silber">Silber</option><option value="bronze">Bronze</option><option value="kupfer">Kupfer</option></select></label>
+<label>Rost <input type="range" id="rst" min="0" max="100" value="0" style="width:90px;flex:none"></label>
+<label>Glanz Metall <input type="range" id="gl" min="0" max="100" value="30" style="width:90px;flex:none"></label>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js" onerror="window.__noEnv=1"></script>
+<script>
+(function(){
+var TP=Math.PI*2,N=12;
+var cv=document.getElementById('c');
+var w=cv.clientWidth||900,h=cv.clientHeight||600;
+var ren=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});ren.setPixelRatio(Math.min(window.devicePixelRatio||1,2));ren.setSize(w,h,false);
+var an=ren.capabilities.getMaxAnisotropy();
+var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(14,w/h,.1,100);cam.position.set(0,0,23.6);cam.lookAt(0,0,0);
+sc.add(new THREE.HemisphereLight(0xffffff,0x8a8a8a,.95));
+var dl=new THREE.DirectionalLight(0xffffff,.35);dl.position.set(3,4,6);sc.add(dl);
+var pl=new THREE.PointLight(0xfff0e0,.1,30);pl.position.set(-4,2,5);sc.add(pl);
+if(THREE.RoomEnvironment&&!window.__noEnv){try{var pm=new THREE.PMREMGenerator(ren);sc.environment=pm.fromScene(new THREE.RoomEnvironment(),.04).texture}catch(e){}}
+
+function loadImg(src){return new Promise(function(res,rej){var i=new Image();i.onload=function(){res(i)};i.onerror=rej;i.src=src})}
+function mirrored(t){t.wrapS=t.wrapT=THREE.MirroredRepeatWrapping;t.anisotropy=an;t.needsUpdate=true;return t}
+
+/* Metall: Licht herausrechnen, Kratzer behalten, orange einfärben */
+function prepMetal(img){
+ var S=1024,c=document.createElement('canvas');c.width=c.height=S;var x=c.getContext('2d');x.drawImage(img,0,0,S,S);
+ var d=x.getImageData(0,0,S,S),L=new Float32Array(S*S),i;
+ for(i=0;i<S*S;i++)L[i]=(d.data[i*4]*.3+d.data[i*4+1]*.59+d.data[i*4+2]*.11)/255;
+ var b=document.createElement('canvas');b.width=b.height=S;var bx=b.getContext('2d');bx.filter='blur(70px)';bx.drawImage(img,0,0,S,S);
+ var bd=bx.getImageData(0,0,S,S);
+ var sm=document.createElement('canvas');sm.width=sm.height=S;var smx=sm.getContext('2d');smx.filter='blur(1.4px)';smx.drawImage(img,0,0,S,S);var sd=smx.getImageData(0,0,S,S),Lh=new Float32Array(S*S);for(i=0;i<S*S;i++)Lh[i]=(sd.data[i*4]*.3+sd.data[i*4+1]*.59+sd.data[i*4+2]*.11)/255;
+ var col=document.createElement('canvas');col.width=col.height=S;var cx=col.getContext('2d'),co=cx.createImageData(S,S);
+ var ht=document.createElement('canvas');ht.width=ht.height=S;var hx=ht.getContext('2d'),ho=hx.createImageData(S,S);
+ for(i=0;i<S*S;i++){var bl=(bd.data[i*4]*.3+bd.data[i*4+1]*.59+bd.data[i*4+2]*.11)/255;
+  var dd=L[i]-bl,ad=Math.max(0,Math.abs(dd)-.035)*Math.sign(dd);var v=.5+ad*3.2;v=Math.max(0,Math.min(1,v));var pos=Math.max(0,ad),neg=Math.max(0,-ad);var k=.78+pos*3.4-neg*1.5;k=Math.max(.55,Math.min(1.25,k));
+  var gk=Math.min(255,235*k);co.data[i*4]=gk;co.data[i*4+1]=gk;co.data[i*4+2]=gk;co.data[i*4+3]=255;
+  var vh=v;var hv=vh*255;ho.data[i*4]=ho.data[i*4+1]=ho.data[i*4+2]=hv;ho.data[i*4+3]=255}
+ cx.putImageData(co,0,0);hx.putImageData(ho,0,0);
+ return {col:mirrored(new THREE.CanvasTexture(col)),h:mirrored(new THREE.CanvasTexture(ht))}}
+
+Promise.all([loadImg('textur-stoff.jpg'),loadImg('textur-metall.jpg'),loadImg('textur-seil-gedreht.jpg'),loadImg('textur-rost.jpg'),loadImg('textur-gummi.jpg')]).then(function(im){start(im[0],im[1],im[2],im[3],im[4])}).catch(function(){document.getElementById('st').textContent='Texturen nicht gefunden (textur-stoff.jpg, textur-metall.jpg neben dieser Seite).'});
+
+function start(imgF,imgM,imgS,imgR,imgG){
+var fabT=mirrored(new THREE.Texture(imgF)),mt=prepMetal(imgM),ropeT=mirrored(new THREE.Texture(imgS)),rustT=mirrored(new THREE.Texture(imgR)),rubT=mirrored(new THREE.Texture(imgG));ropeT.wrapS=THREE.RepeatWrapping;ropeT.repeat.set(2.4,1);
+var rg=new THREE.TorusGeometry(1.4,.5,20,72);
+var mRing=new THREE.Mesh(rg,new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));
+var sh=new THREE.Shape(),pitch=TP/N,k2;
+for(k2=0;k2<N;k2++){var a0=k2*pitch,pts=[[1.62,a0-.16],[2.0,a0-.1],[2.0,a0+.1],[1.62,a0+.16]];pts.forEach(function(p,q){var X=Math.cos(p[1])*p[0],Y=Math.sin(p[1])*p[0];(k2===0&&q===0)?sh.moveTo(X,Y):sh.lineTo(X,Y)});
+ var a1=a0+.16,a2=a0+pitch-.16,m1=(a1+a2)/2;sh.lineTo(Math.cos(m1)*1.62,Math.sin(m1)*1.62)}
+sh.closePath();var hole=new THREE.Path();hole.absarc(0,0,.9,0,TP,true);sh.holes.push(hole);
+var gg=new THREE.ExtrudeGeometry(sh,{depth:.46,bevelEnabled:false,curveSegments:32});gg.translate(0,0,-.23);
+var mGear=new THREE.Mesh(gg,new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));
+var NU=720,NV=96,R0=1.35,NUr=192,NVr=48,OU=.371,OV=.413,JIT=[0,.0011,-.0013,.0027,-.0031,.0049];
+var P0=new Float32Array(NU*NV*3),P1=new Float32Array(NU*NV*3),Pr=new Float32Array(NUr*NVr*3);
+function sample(mesh,out,nu,nv,done){
+ mesh.updateMatrixWorld(true);var rc=new THREE.Raycaster(),o=new THREE.Vector3(),d=new THREE.Vector3(),iu=0;
+ (function step(){var t0=performance.now();
+  while(iu<nu&&performance.now()-t0<30){var ph=(iu+OU)/nu*TP;for(var iv=0;iv<nv;iv++){var ps=(iv+OV)/nv*TP,k=(iu*nv+iv)*3,ok=false,t,dist=0;
+   o.set(Math.cos(ph)*R0,Math.sin(ph)*R0,0);
+   for(t=0;t<JIT.length&&!ok;t++){var p2=ph+JIT[t],s2=ps+JIT[t]*1.7;d.set(Math.cos(s2)*Math.cos(p2),Math.cos(s2)*Math.sin(p2),Math.sin(s2));rc.set(o,d);var hit=rc.intersectObject(mesh,false);if(hit.length){dist=hit[0].distance;ok=true}}
+   if(ok){out[k]=o.x+d.x*dist;out[k+1]=o.y+d.y*dist;out[k+2]=o.z+d.z*dist}
+   else{var pk=iv>0?k-3:(iu>0?k-nv*3:k);out[k]=out[pk];out[k+1]=out[pk+1];out[k+2]=out[pk+2]}}iu++}
+  if(iu<nu)setTimeout(step,0);else done()})()}
+function upsample(){
+ for(var iu=0;iu<NU;iu++){var fu=iu/NU*NUr,i0=Math.floor(fu),tu=fu-i0,i1=(i0+1)%NUr;for(var iv=0;iv<NV;iv++){var fv=iv/NV*NVr,j0=Math.floor(fv),tv2=fv-j0,j1=(j0+1)%NVr;
+  for(var c=0;c<3;c++){var a=Pr[(i0*NVr+j0)*3+c],b=Pr[(i0*NVr+j1)*3+c],cc=Pr[(i1*NVr+j0)*3+c],d=Pr[(i1*NVr+j1)*3+c];
+   P0[(iu*NV+iv)*3+c]=(a*(1-tv2)+b*tv2)*(1-tu)+(cc*(1-tv2)+d*tv2)*tu}}}}
+var cnt=(NU+1)*(NV+1),pos=new Float32Array(cnt*3),nor=new Float32Array(cnt*3),uv=new Float32Array(cnt*2),idx=[],geo=new THREE.BufferGeometry();
+for(var a=0;a<=NU;a++)for(var b=0;b<=NV;b++){var kk=a*(NV+1)+b;uv[kk*2]=a/NU;uv[kk*2+1]=b/NV}
+for(var a2=0;a2<NU;a2++)for(var b2=0;b2<NV;b2++){var p=a2*(NV+1)+b2,q=(a2+1)*(NV+1)+b2;idx.push(p,q,p+1,q,q+1,p+1)}
+geo.setIndex(idx);geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('normal',new THREE.BufferAttribute(nor,3));geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+var M=new Float32Array(NU*NV*3);
+function build(m,withN){
+ var i,im=1-m;for(i=0;i<M.length;i++)M[i]=P0[i]*im+P1[i]*m;
+ function g(iu,iv,c){iu=(iu+NU)%NU;iv=(iv+NV)%NV;return M[(iu*NV+iv)*3+c]}
+ for(var iu=0;iu<=NU;iu++)for(var iv=0;iv<=NV;iv++){var u=iu%NU,v=iv%NV,k=(iu*(NV+1)+iv)*3;
+  pos[k]=g(u,v,0);pos[k+1]=g(u,v,1);pos[k+2]=g(u,v,2);
+  if(withN){var ux=g(u+1,v,0)-g(u-1,v,0),uy=g(u+1,v,1)-g(u-1,v,1),uz=g(u+1,v,2)-g(u-1,v,2),vx=g(u,v+1,0)-g(u,v-1,0),vy=g(u,v+1,1)-g(u,v-1,1),vz=g(u,v+1,2)-g(u,v-1,2);
+   var nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx,l=Math.sqrt(nx*nx+ny*ny+nz*nz)||1;nor[k]=nx/l;nor[k+1]=ny/l;nor[k+2]=nz/l}}
+ geo.attributes.position.needsUpdate=true;if(withN)geo.attributes.normal.needsUpdate=true}
+var curM=0,curRust=0,curTint=[.88,.88,.9];
+var bumpChunk=THREE.ShaderChunk.bumpmap_pars_fragment.replace(/texture2D\(\s*bumpMap\s*,\s*([^)]*?)\s*\)\.x/g,'bumpH($1)');
+function mk(flat){var m=new THREE.MeshStandardMaterial({color:0xffffff,map:fabT,bumpMap:rubT,bumpScale:.8,roughness:.5,metalness:0,side:THREE.DoubleSide,flatShading:flat});
+ m.onBeforeCompile=function(s){s.uniforms.uMix={value:curM};s.uniforms.uFab={value:fabT};s.uniforms.uMet={value:mt.col};s.uniforms.uMetH={value:mt.h};s.uniforms.uRust={value:rustT};s.uniforms.uRustMix={value:curRust};s.uniforms.uTime={value:0};s.uniforms.uWob={value:0};s.uniforms.uRub={value:rubT};s.uniforms.uTint={value:new THREE.Vector3(curTint[0],curTint[1],curTint[2])};m.userData.sh=s;
+  s.vertexShader=s.vertexShader.replace('#include <common>','#include <common>\nuniform float uTime;uniform float uWob;').replace('#include <begin_vertex>','#include <begin_vertex>\ntransformed+=normal*uWob*(sin(position.x*1.9+uTime*1.6)*sin(position.y*1.7+uTime*1.25)+.6*sin(position.z*3.1+position.x*1.3+uTime*2.1));');
+  s.fragmentShader=s.fragmentShader
+  .replace('#include <bumpmap_pars_fragment>','uniform float uMix;uniform sampler2D uRub;uniform vec3 uTint;float bumpH(vec2 uv){return texture2D(uRub,uv*vec2(3.,1.2)).r*(1.-uMix);}\n'+bumpChunk)
+  .replace('#include <map_pars_fragment>','#include <map_pars_fragment>\nuniform sampler2D uFab;uniform sampler2D uMet;uniform sampler2D uMetH;uniform sampler2D uRust;uniform float uRustMix;')
+  .replace('#include <roughnessmap_fragment>','float roughnessFactor=roughness;float scr=abs(texture2D(uMetH,vUv*vec2(1.,.5)).r-.5)*2.;roughnessFactor=clamp(roughness+scr*.3*uMix,0.,1.);')
+  .replace('#include <map_fragment>','float stp=step(.5,fract(vUv.x*2.));vec3 paint=mix(vec3(.84,.83,.80),vec3(.92,.31,.05),stp);float wr=texture2D(uMetH,vUv*vec2(4.,1.6)).r-.5;float rl=clamp(dot(texture2D(uRub,vUv*vec2(3.,1.2)).rgb,vec3(.333))*1.25,0.,1.);vec3 fb=paint*(1.+wr*.2)*(.985+.025*rl);vec3 mt=texture2D(uMet,vUv*vec2(1.,.5)).rgb*uTint;vec3 rs=texture2D(uRust,vUv*vec2(1.,.8)).rgb;float mkr=clamp((rs.r-rs.b)*4.-.25,0.,1.);float lmr=dot(rs,vec3(.333));vec3 steel=vec3(.17,.15,.14)*(.5+lmr*.8);vec3 rustc=vec3(.72,.27,.04)*(.42+lmr*.7);rs=mix(steel,rustc,mkr);mt=mix(mt,rs,uRustMix);diffuseColor.rgb*=mix(fb,mt,uMix);')
+  .replace('gl_FragColor = vec4( outgoingLight, diffuseColor.a );','float frn=pow(1.-clamp(dot(normalize(normal),normalize(vViewPosition)),0.,1.),2.2);outgoingLight*=1.-.42*frn;gl_FragColor = vec4( outgoingLight, diffuseColor.a );')};return m}
+var matS=mk(false),matF=mk(true);
+var mesh=new THREE.Mesh(geo,matS);
+var view=new THREE.Group(),flip=new THREE.Group(),tilt=new THREE.Group();tilt.rotation.x=-.5;sc.add(view);view.add(flip);flip.add(tilt);tilt.add(mesh);
+function shTex(gear){var c=document.createElement('canvas');c.width=c.height=256;var x=c.getContext('2d');x.filter='blur(7px)';x.fillStyle='rgba(0,0,0,.9)';x.beginPath();
+ if(gear){var n=12,i,a0,ro=100,rt2=84;for(i=0;i<n;i++){a0=i/n*Math.PI*2;var d=Math.PI/n;x.lineTo(128+Math.cos(a0-d*.55)*rt2,128+Math.sin(a0-d*.55)*rt2);x.lineTo(128+Math.cos(a0-d*.3)*ro,128+Math.sin(a0-d*.3)*ro);x.lineTo(128+Math.cos(a0+d*.3)*ro,128+Math.sin(a0+d*.3)*ro);x.lineTo(128+Math.cos(a0+d*.55)*rt2,128+Math.sin(a0+d*.55)*rt2)}x.closePath()}
+ else{x.arc(128,128,96,0,Math.PI*2)}
+ x.moveTo(128+46,128);x.arc(128,128,46,0,Math.PI*2,true);x.fill('evenodd');return new THREE.CanvasTexture(c)}
+var shRing=new THREE.Mesh(new THREE.PlaneGeometry(4.4,4.4),new THREE.MeshBasicMaterial({map:shTex(false),transparent:true,depthWrite:false,opacity:.2}));
+var shGear=new THREE.Mesh(new THREE.PlaneGeometry(4.4,4.4),new THREE.MeshBasicMaterial({map:shTex(true),transparent:true,depthWrite:false,opacity:0}));
+[shRing,shGear].forEach(function(q){q.rotation.x=-Math.PI/2+.42;q.position.y=-2.5;sc.add(q)});
+var ropes=new THREE.Group();tilt.add(ropes);var ropeM=new THREE.MeshStandardMaterial({color:0x9d927f,map:ropeT,roughness:.95});
+for(var ri=0;ri<4;ri++){var f0=ri*Math.PI/2+Math.PI/4,f1=f0+Math.PI/2,pp=[],rr=[1.9,2.28,2.5,2.28,1.9],zz=[0,-.12,-.18,-.12,0];
+ for(var q=0;q<5;q++){var fq=f0+(f1-f0)*q/4;pp.push(new THREE.Vector3(Math.cos(fq)*rr[q],Math.sin(fq)*rr[q],zz[q]))}
+ ropes.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pp),64,.06,12,false),ropeM))}
+function ss(a,b,x){x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)}
+var ready=false,lastM=-1,W=.0006,auto=false,tAcc=0,last=null,cY=0,tY=0,vY=0,cX=0,tX=0,vX=0,manualUntil=0,rtimer=null,tStart=null,HOLD=3200,TM=2400;
+var sl=document.getElementById('s'),au=document.getElementById('au'),wf=document.getElementById('wf'),gl=document.getElementById('gl'),rst=document.getElementById('rst'),mtSel=document.getElementById('mt'),tints={silber:[1.05,1.07,1.12],bronze:[1.0,.68,.32],kupfer:[1.1,.55,.38]};
+function apply(m){var flat=m>.5;mesh.material=flat?matF:matS;var mm=mesh.material;curM=m;
+ var gv=gl.value/100,rg2=.95-gv*.4;curRust=rst.value/100;mm.roughness=.45+(rg2-.45)*m;mm.metalness=(.4-.25*curRust)*m;mm.envMapIntensity=.25-.15*m;mm.bumpScale=.04*(1-m);var tt=tints[mtSel.value];curTint=tt;mm.wireframe=wf.checked;
+ var rf=1-.32*ss(.04,.3,m);ropes.scale.setScalar(rf);ropes.visible=m<.34;
+ if(mm.userData.sh){mm.userData.sh.uniforms.uMix.value=m;mm.userData.sh.uniforms.uRustMix.value=curRust;mm.userData.sh.uniforms.uTint.value.set(tt[0],tt[1],tt[2])}}
+sl.oninput=function(){manualUntil=performance.now()+4500};
+wf.onchange=gl.oninput=rst.oninput=mtSel.onchange=function(){lastM=-1};
+var drag=false,px=0,py=0;
+cv.addEventListener('pointerdown',function(e){document.getElementById('hint').style.opacity=0;clearTimeout(rtimer);drag=true;px=e.clientX;py=e.clientY;cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'});
+cv.addEventListener('pointermove',function(e){if(!drag)return;tY+=(e.clientX-px)*.012;tX+=(e.clientY-py)*.01;px=e.clientX;py=e.clientY;tX=Math.max(-1.2,Math.min(1.2,tX))});
+function up(){drag=false;cv.style.cursor='grab';clearTimeout(rtimer);rtimer=setTimeout(function(){tY=0;tX=0},1500)}cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+function loop(ts){
+ if(ready){var m;
+  if(tStart===null)tStart=ts;
+  vY=(vY+(tY-cY)*.1)*.82;cY+=vY;vX=(vX+(tX-cX)*.1)*.82;cX+=vX;
+  view.rotation.y=cY;view.rotation.x=cX;
+  if(ts<manualUntil){m=sl.value/100}
+  else{var t=(ts-tStart)%(2*(HOLD+TM));
+   if(t<HOLD)m=0;else if(t<HOLD+TM)m=ss(0,1,(t-HOLD)/TM);else if(t<2*HOLD+TM)m=1;else m=1-ss(0,1,(t-2*HOLD-TM)/TM);
+   if(document.activeElement!==sl)sl.value=Math.round(m*100)}
+  last=ts;
+  if(Math.abs(m-lastM)>.0015||lastM<0){build(m,m<=.5);lastM=m;apply(m)}
+  var hov=Math.sin(ts*.0014);view.position.y=hov*.14;
+  var so=.2-.035*hov;shRing.material.opacity=so*(1-ss(.1,.9,m));shGear.material.opacity=so*ss(.1,.9,m);var sk=1-.05*hov;shRing.scale.setScalar(sk);shGear.scale.setScalar(sk);
+  ren.render(sc,cam)}
+ requestAnimationFrame(loop)}
+setTimeout(function(){sample(mRing,Pr,NUr,NVr,function(){upsample();sample(mGear,P1,NU,NV,function(){
+ build(0,true);apply(0);ren.render(sc,cam);build(1,false);apply(1);ren.render(sc,cam);build(0,true);apply(0);lastM=0;
+ ready=true;document.getElementById('st').style.display='none'})})},60);
+requestAnimationFrame(loop);
+}
+})();
+</script>
+</body>
+</html>
