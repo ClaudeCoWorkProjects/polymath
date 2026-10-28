@@ -176,7 +176,8 @@ nav a{font:var(--label-l);letter-spacing:var(--label-l-ls)}
 .hrow .tools{margin:0}
 .hrow .sharemenu{left:auto;right:0}
 .more a{text-decoration:none;font:var(--label-l);letter-spacing:var(--label-l-ls);color:var(--soft)}
-.label h2,.lead,.ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
+.lead,.ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
+.label h2{font:600 24px/30px var(--sans);letter-spacing:-.02em}
 .body p,.list li,.sum li{font:var(--body-l);letter-spacing:var(--body-l-ls)}
 .body .lead,.body .ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
 .col h3{font:var(--title-l);letter-spacing:var(--title-l-ls)}
@@ -361,6 +362,9 @@ dialog.pop.show::backdrop{opacity:1}
   .axis{display:none}
   .pop-info{left:0;right:0;text-align:center}
 }
+
+/* keine einzelnen Wörter in der letzten Zeile */
+main p,main li,.htxt p{text-wrap:pretty}
 </style>
 </head>
 <body>
@@ -368,7 +372,7 @@ dialog.pop.show::backdrop{opacity:1}
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#">Personal geht anders.</a>
+    <a class="brand" href="../../index.html">Personal geht anders.</a>
     <nav id="nav"><a href="../ueber-mich/variante-karten.html">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="index.html">Blog</a><a href="#">Kontakt</a></nav>
     <button class="burger" id="burger" aria-label="Menü">☰</button>
   </div>
@@ -519,7 +523,7 @@ dialog.pop.show::backdrop{opacity:1}
 
 <footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span></div></footer>
 
-<script type="application/json" id="umbruch">{"v":1,"m":{}}</script>
+<script type="application/json" id="umbruch">{"v":1,"m":{"Man kann Motivation nur ermöglichen, ind|322":{"b":[[7,"d"],[13,"d"],[22,"d"],[30,"d"],[39,"d"]]},"Nicht nur einmal, sondern täglich 8 Stun|184":{"b":[[7,"d"],[16,"d"],[23,"d"]]},"Das Thema Motivation wird niemals allumf|198":{"b":[[6,"d"],[13,"d"],[20,"d"]]},"Wer versucht, Mitarbeiter zu motivieren,|199":{"b":[[8,"d"],[13,"d"],[20,"d"]]},"Menschen, die am Arbeitsplatz noch unmot|108":{"b":[[7,"d"]]},"All das, ohne Zwang und ohne Geld dafür |98":{"b":[[10,"d"]]},"Fangen wir ganz vorne an: Sie haben Arbe|205":{"b":[[10,"d"],[17,"d"],[25,"d"]]},"Können Sie diese Fragen überzeugend bean|127":{"b":[[6,"d"],[15,"d"]]},"Das Ziel ist also Ihr Team zu begeistern|167":{"b":[[11,"d"],[19,"d"]]}}}</script>
 <script>
 (function(){
   var nav=document.getElementById('nav');

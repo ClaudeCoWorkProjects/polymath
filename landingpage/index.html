@@ -178,7 +178,8 @@ nav a{font:var(--label-l);letter-spacing:var(--label-l-ls)}
 .hrow .tools{margin:0}
 .hrow .sharemenu{left:auto;right:0}
 .more a{text-decoration:none;font:var(--label-l);letter-spacing:var(--label-l-ls);color:var(--soft)}
-.label h2,.lead,.ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
+.lead,.ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
+.label h2{font:600 24px/30px var(--sans);letter-spacing:-.02em}
 .body p,.list li,.sum li{font:var(--body-l);letter-spacing:var(--body-l-ls)}
 .body .lead,.body .ask{font:var(--headline-s);letter-spacing:var(--headline-s-ls)}
 .col h3{font:var(--title-l);letter-spacing:var(--title-l-ls)}
@@ -306,7 +307,9 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
 .fx-n{display:flex;align-items:center;gap:8px;margin:8px 0}
 .hero .ph.ring .tools{margin:8px 0 0}
 .hgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,3.5vw,48px);align-items:center;margin-top:clamp(16px,3vw,32px)}
-.hero .htxt p{margin:0;max-width:32ch;font:400 17px/1.6 var(--sans);color:var(--soft)}
+.hero .htxt p{margin:0;max-width:40ch;font:400 17px/1.6 var(--sans);color:var(--soft);text-wrap:pretty}
+@media(max-width:860px){.hero .htxt br.d{display:none}}
+.hero .htxt p.hq{font:600 22px/28px var(--sans);letter-spacing:-.02em;color:#000;margin-bottom:14px}
 .cvw{position:relative;container-type:inline-size}
 .htxt{align-self:center}
 .hero{padding-top:clamp(72px,14vh,170px);padding-bottom:0}
@@ -317,7 +320,7 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
 @media(max-width:760px){.hgrid{grid-template-columns:1fr}}
 .um{position:relative;height:100svh;scroll-margin-top:0}
 .um-stick{position:sticky;top:0;height:100svh}
-.um iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+.um iframe{display:block;width:100%;height:100%;border:0;background:transparent}
 .fx-s{font:300 11px/1.3 var(--sans);color:#9a9a9a;margin-top:5px;white-space:nowrap}
 .fx-v{font:900 clamp(32px,4.4vw,46px)/1 var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums lining-nums;color:#000;white-space:nowrap}
 .fx-a{width:18px;height:18px;opacity:0;transition:opacity .4s,transform .5s;flex:none}
@@ -325,6 +328,31 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
 .fx-a.on{opacity:1;transform:none}
 @media(max-width:640px){.kz{display:grid;grid-template-columns:1fr 1fr;gap:22px 16px}.fx-dv{display:none}.fx-t,.fx-s{white-space:normal}}
 @media(prefers-reduced-motion:reduce){.fx-a{transition:none;transform:none}}
+
+/* keine einzelnen Wörter in der letzten Zeile */
+main p,main li,.htxt p{text-wrap:pretty}
+
+main.wrap{display:flow-root}
+.sec.pair{display:block}
+.sec.pair .row{display:grid;grid-template-columns:240px minmax(0,1fr);gap:clamp(24px,5vw,72px)}
+.sec.pair .row + .row{margin-top:clamp(28px,6vh,56px)}
+@media(min-width:861px){.sec.pair .row{grid-template-columns:215px minmax(0,470px);justify-content:center;gap:36px}}
+@media(max-width:860px){.sec.pair .row{grid-template-columns:1fr;gap:20px}}
+/* Kontaktformular unter den Abschnitten */
+.form{display:grid;gap:14px;margin-top:6px}
+.form label.f{display:grid;gap:6px;font:var(--label-l);letter-spacing:var(--label-l-ls);color:var(--soft)}
+.form input[type=text],.form input[type=email],.form textarea{width:100%;padding:12px 14px;border:1px solid #d6d6d6;border-radius:12px;background:#fff;color:var(--ink);font:var(--body-l);letter-spacing:var(--body-l-ls)}
+.form textarea{min-height:96px;resize:vertical}
+.form input:focus-visible,.form textarea:focus-visible,.form button:focus-visible{outline:2px solid #ff6a00;outline-offset:2px}
+.form label.chk{display:flex;gap:10px;align-items:flex-start;font:var(--body-m);letter-spacing:var(--body-m-ls);color:var(--soft)}
+.form label.chk input{margin-top:3px;accent-color:#111}
+.form button[type=submit]{justify-self:start;padding:12px 28px;border:0;border-radius:999px;background:#111;color:#fff;font:var(--label-l);cursor:pointer;transition:background .2s}
+.form button[type=submit]:hover{background:#ff6a00}
+.form .status{min-height:1.4em;font:var(--body-m);color:var(--soft)}
+section.kontakt{position:relative;z-index:3;width:min(820px,100% - 48px);margin:clamp(16px,2vw,32px) auto 8px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:clamp(24px,5vw,72px);padding:clamp(24px,3vw,36px)}
+section.kontakt .label{position:static;color:var(--ink)}
+@media(min-width:861px){section.kontakt{grid-template-columns:215px minmax(0,470px);justify-content:center;gap:36px;padding:24px 36px}}
+@media(max-width:860px){section.kontakt{grid-template-columns:1fr;gap:20px;padding:20px}}
 </style>
 </head>
 <body>
@@ -332,8 +360,8 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#">Personal geht anders.</a>
-    <nav id="nav"><a href="#um">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="index.html">Blog</a><a href="#">Kontakt</a></nav>
+    <a class="brand" href="../index.html">Strategie plant Zukunft</a>
+    <nav id="nav"><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="#kontakt">Kontakt</a></nav>
     <button class="burger" id="burger" aria-label="Menü">☰</button>
   </div>
 </header>
@@ -351,7 +379,7 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
       <button id="skip" type="button" aria-label="Lese-Effekt ausschalten" aria-pressed="true" title="Lese-Effekt ausschalten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 11h9M4 16h6"/><path class="cur" d="m14 13 7 3.500-3 1-1 3z"/><path class="slash" d="M3 21 21 3"/></svg></button>
     </div>
       <div class="hgrid">
-        <div class="htxt"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+        <div class="htxt"><p class="hq">Quo vadis, Deutschland?</p><p>Die Titanic hat wenigstens noch versucht, <br class="d">dem Eisberg auszuweichen. Wir dagegen <br class="d">schaufeln weiter Kohle in den Brennkessel – <br class="d">und viel zu oft Steuergeld aus dem Fenster.</p></div>
         <div class="cvw">
           <canvas id="c" role="img" aria-label="Ein Rettungsring verwandelt sich in ein Zahnrad: vom Überleben zum Wachstum"></canvas>
           <div id="st">Lade …</div>
@@ -392,28 +420,40 @@ nav a,.more a,main a:not(.pop-link){color:var(--ink)}
 <main class="wrap">
 
   <section class="sec">
-    <div class="label"><span class="no">01</span><h2>Was jetzt zählt</h2></div>
+    <div class="label"><span class="no">01</span><h2>Leistung muss sich lohnen.</h2></div>
     <div class="body">
-      <p class="lead rd">Um konkurrenzfähig zu bleiben, müssen wir besser werden.</p>
+      <p class="rd">Mit dieser Floskel traktieren uns Politiker seit Menschengedenken. Die Realität sieht anders aus: Leistung wird bestraft. Die höchsten Steuern und Sozialabgaben Europas torpedieren die Wettbewerbsfähigkeit deutscher Unternehmen im globalen Wettbewerb. Und dann ist da noch Deutschlands Spezialdisziplin: Bürokratie biblischen Ausmaßes.</p>
+      <p class="rd">Es wird uns wirklich nicht leicht gemacht, Steuern für Väterchen Staat zu generieren. Dabei möchte ich helfen, indem ich mache, was ich am besten kann: kreative Lösungen entwickeln.</p>
     </div>
   </section>
 
-  <section class="sec">
-    <div class="label"><span class="no">02</span><h2>Mein Beitrag</h2></div>
-    <div class="body">
-      <p class="lead rd">Daran möchte ich mitwirken, indem ich Unternehmen helfe, das volle Potenzial Ihrer Angestellten zu entfalten und strategische Weichen zu stellen.</p>
+  <section class="sec pair">
+    <div class="row">
+      <div class="label"><span class="no">02</span><h2>Mein Nachteil</h2></div>
+      <div class="body">
+      <p class="rd">Seit meiner Kindheit neige ich zum Grübeln. Ziel dieser oft überflüssigen, stressverursachenden Denkaufgaben: Lösungen für die komplexen Szenarien zu finden, die mir mein Unterbewusstsein unaufgefordert frei Haus liefert. Mein antrainierter Perfektionismus zwingt mich zudem, alles optimieren zu müssen. Aus dem Zwang möchte ich eine Berufung machen, um meinem Naturell gerecht zu werden: analysieren und optimieren.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label"><span class="no">03</span><h2>Ihr Vorteil</h2></div>
+      <div class="body">
+      <p class="rd">Wenn Sie jemanden brauchen, der Ihnen im Tagesgeschäft Probleme löst und Ideen entwickelt, bin ich Ihr Mann. Wer mit mir zusammenarbeitet, bekommt einen Mitstreiter, der nicht aufhört, sich Gedanken über Ihr Problem zu machen, bis es gelöst ist. Für meinen Seelenfrieden, für Ihren Erfolg. Ich habe also ein egoistisches Motiv, Ihre Ziele zu erreichen.</p>
+      <p class="rd">Nutzen Sie das. Wie genau, finden wir in einem zwanglosen Gespräch heraus. Schreiben Sie mir einfach, alles weitere ergibt sich dann.</p>
+      </div>
     </div>
   </section>
 
 </main>
+
 
 <section class="um" id="um" aria-label="Über mich"><div class="um-stick"><iframe id="umf" title="Über mich" tabindex="-1"></iframe></div></section>
 <script>
 (function(){
 var um=document.getElementById('um'),fr=document.getElementById('umf'),stk=um.querySelector('.um-stick');
 function root(){try{return fr.contentDocument.documentElement}catch(e){return null}}
-function size(){var d=root();if(!d)return;um.style.height=Math.max(stk.clientHeight,d.scrollHeight)+'px'}
-function sync(){var d=root();if(!d)return;var r=um.getBoundingClientRect(),max=Math.max(0,d.scrollHeight-stk.clientHeight);fr.contentWindow.scrollTo(0,Math.min(max,Math.max(0,-r.top)))}
+function E(){return innerWidth>860?Math.round(innerHeight*0.35):0}
+function size(){var d=root();if(!d)return;um.style.height=(Math.max(stk.clientHeight,d.scrollHeight)+E())+'px'}
+function sync(){var d=root();if(!d)return;var r=um.getBoundingClientRect(),max=Math.max(0,d.scrollHeight-stk.clientHeight);fr.contentWindow.scrollTo(0,Math.min(max,Math.max(0,-r.top-E())))}
 fr.addEventListener('load',function(){size();sync();
   try{new fr.contentWindow.ResizeObserver(function(){size();sync()}).observe(root())}catch(e){}
   fr.contentDocument.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.tl a');if(!a)return;var t=fr.contentDocument.querySelector(a.getAttribute('href'));if(!t)return;e.preventDefault();e.stopImmediatePropagation();var b=t.getBoundingClientRect(),y=fr.contentWindow.scrollY+b.top+b.height/2-stk.clientHeight/2;window.scrollTo({top:um.getBoundingClientRect().top+scrollY+y,behavior:'smooth'})},true);
@@ -424,9 +464,25 @@ function later(){if(window.requestIdleCallback)requestIdleCallback(go,{timeout:3
 if(document.readyState==='complete')later();else addEventListener('load',later);
 })();
 </script>
-<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span></div></footer>
+<section class="kontakt" id="kontakt" aria-label="Kontakt">
+  <div class="label"><h2>Kontakt</h2></div>
+  <div class="body">
+    <form class="form" id="f-kontakt" novalidate>
+      <label class="f">Anrede/Vorname *<input type="text" name="vorname" required autocomplete="given-name"></label>
+      <label class="f">Nachname *<input type="text" name="nachname" required autocomplete="family-name"></label>
+      <label class="f">E-Mail *<input type="email" name="email" required autocomplete="email"></label>
+      <label class="f">Wie kann ich Ihnen helfen?<textarea name="frage"></textarea></label>
+      <label class="chk"><input type="checkbox" name="datenschutz" required><span>Ich bin damit einverstanden, daß meine Daten zur Bearbeitung meines Anliegens verwendet werden. Weitere Informationen und Widerrufshinweise finden Sie in der <a href="#">Datenschutzerklärung</a>.</span></label>
+      <label class="chk"><input type="checkbox" name="kontakt" required><span>Ich bin mit einer Kontaktaufnahme einverstanden.</span></label>
+      <button type="submit">Absenden</button>
+      <p class="status" role="status"></p>
+    </form>
+  </div>
+</section>
 
-<script type="application/json" id="umbruch">{"v":1,"m":{}}</script>
+<footer><div class="wrap"><span>© Strategie plant Zukunft · vonnichts-kommtnichts.de</span></div></footer>
+
+<script type="application/json" id="umbruch">{"v":1,"m":{"Mit dieser Floskel traktieren uns Politi|335":{"b":[[7,"d"],[14,"d"],[21,"d"],[25,"d"],[30,"d"],[37,"d"]]},"Seit meiner Kindheit neige ich zum Grübe|416":{"b":[[9,"d"],[13,"d"],[20,"d"],[27,"d"],[33,"d"],[41,"d"],[49,"d"]]},"Wenn Sie jemanden brauchen, der Ihnen im|352":{"b":[[6,"d"],[13,"d"],[21,"d"],[28,"d"],[38,"d"],[44,"d"]]},"Es wird uns wirklich nicht leicht gemach|181":{"b":[[8,"d"],[16,"d"],[25,"d"]]},"Nutzen Sie das. Wie genau, finden wir in|133":{"b":[[3,"d"],[12,"d"]]}}}</script>
 <script>
 (function(){
   var nav=document.getElementById('nav');
@@ -1103,32 +1159,38 @@ main a.prevcard:hover,main a.prevcard:focus-visible{animation:none!important;tex
     li.onclick=function(){ window.scrollTo({top:top0()+i*step()+2,behavior:'smooth'}) };
     tl.appendChild(li);
   });
-  var qEl=document.querySelector('main.wrap > .more')||document.querySelector('main.wrap > .quote');
-  if(qEl){
-    var ql=document.createElement('li'); ql.title='Passend dazu'; ql.innerHTML='<span>Passend dazu</span>';
-    ql.onclick=function(){ window.scrollTo({top:qEl.getBoundingClientRect().top+scrollY-Math.round(innerHeight*0.3),behavior:'smooth'}) };
-    tl.appendChild(ql);
-  }
+  var extras=[['um','Über mich'],['kontakt','Kontakt']].map(function(x){ return {el:document.getElementById(x[0]),t:x[1]} }).filter(function(x){ return x.el });
+  extras.forEach(function(x){
+    var li=document.createElement('li'); li.title=x.t; li.innerHTML='<span></span>'; li.firstChild.textContent=x.t;
+    li.onclick=function(){ window.scrollTo({top:x.el.getBoundingClientRect().top+scrollY-(x.el.id==='um'?0:Math.round(innerHeight*0.12)),behavior:'smooth'}) };
+    tl.appendChild(li);
+  });
   document.body.appendChild(tl);
-  function step(){return Math.round(innerHeight*0.95)}
+  function step(){return Math.round(innerHeight*0.5)}
+  function E(){return innerWidth>860?Math.round(innerHeight*0.35):0}
   function top0(){return pw.getBoundingClientRect().top+scrollY-64}
   function size(){
-    pw.style.height=(innerHeight-64+secs.length*step())+'px';
+    pw.style.height=(innerHeight-64+secs.length*step()+E())+'px';
     var last=secs[secs.length-1], sr=last.getBoundingClientRect(), bot=0;
     [].forEach.call(last.children,function(c){ bot=Math.max(bot,c.getBoundingClientRect().bottom-sr.top) });
-    pw.style.marginBottom=(-Math.max(0,Math.round(last.clientHeight-bot-48)))+'px';
+    var G=Math.round(Math.min(160,Math.max(96,innerHeight*0.14)));
+    var X=Math.max(0,Math.round(last.clientHeight-bot));
+    pw.style.marginBottom=(-X)+'px';
+    var umE=document.getElementById('um'); if(umE) umE.style.marginTop=(innerWidth>860?(X-innerHeight-E()):0)+'px';
     var first=secs[0], fr=first.getBoundingClientRect(), top=1e9;
     [].forEach.call(first.children,function(c){ top=Math.min(top,c.getBoundingClientRect().top-fr.top) });
-    pw.style.marginTop=(-Math.max(0,Math.round(top-48)))+'px';
+    pw.style.marginTop=(-Math.max(0,Math.round(top-G)))+'px';
   }
   var cur=-1, curAct=-1, wasOn=false;
   function hook(){return window.__pinHook}
   function upd(){
     var rt=pw.getBoundingClientRect(), s=64-rt.top, stp=step();
     var i=Math.max(0,Math.min(secs.length-1,Math.floor(s/stp)));
-    var inView=rt.top<innerHeight*0.6 && rt.bottom>innerHeight*0.4, shown=inView && rt.top<=64+innerHeight*0.2;
-    var qAct=qEl&&qEl.getBoundingClientRect().top<innerHeight*0.6, act=qAct?secs.length:i;
-    tl.classList.toggle('show',shown||!!qAct);
+    var inView=rt.top<innerHeight*0.95 && rt.bottom>innerHeight*0.4, shown=inView, tlOn=rt.top<=64+innerHeight*0.45 && rt.bottom>innerHeight*0.4;
+    var f=E()?Math.max(0,Math.min(1,(innerHeight+E()-rt.bottom)/E())):1;
+    st.style.opacity=E()?Math.max(0,1-f/0.45):1; var uf=document.getElementById('umf'); if(uf) uf.style.opacity=E()?Math.max(0,(f-0.55)/0.45):1;
+    var qAct=false, act=i; extras.forEach(function(x,k){ var da=(x.el.id==='um'&&E())?(f>0.5):(x.el.getBoundingClientRect().top<innerHeight*0.6); if(da){ qAct=true; act=secs.length+k } });
+    tl.classList.toggle('show',tlOn||qAct);
     if(act!==curAct){
       curAct=act;
       [].forEach.call(tl.children,function(l,k){l.className=k===act?'on':k<act?'done':''});
@@ -1307,6 +1369,15 @@ requestAnimationFrame(loop);
 addEventListener('resize',function(){var W=cv.clientWidth,H=cv.clientHeight;if(!W||!H)return;ren.setSize(W,H,false);cam.aspect=W/H;cam.updateProjectionMatrix()});
 }
 })();
+</script>
+<script>
+document.querySelectorAll('form.form').forEach(function(f){
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!f.checkValidity()){ f.reportValidity(); return }
+    f.querySelector('.status').textContent='Noch nicht angeschlossen: Es wurde nichts gesendet.';
+  });
+});
 </script>
 </body>
 </html>

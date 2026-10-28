@@ -128,7 +128,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 @media(max-width:640px){
   .wrap{width:calc(100% - 40px)}
   .burger{display:block}
-  nav{position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:#f3f3f3;padding:4px 20px 16px;display:none;box-shadow:0 12px 24px rgba(0,0,0,.06)}
+  nav{position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:#fff;padding:4px 20px 16px;display:none;box-shadow:0 12px 24px rgba(0,0,0,.06)}
   nav.open{display:flex}
   nav a{padding:14px 0;font-size:1rem}
   .tools{gap:20px;flex-wrap:wrap}
@@ -441,6 +441,9 @@ h1.page span{color:var(--hot)}
   .js .cards .sec{opacity:1}
 }
 
+
+/* keine einzelnen Wörter in der letzten Zeile */
+main p,main li,.htxt p{text-wrap:pretty}
 </style>
 <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -450,7 +453,7 @@ h1.page span{color:var(--hot)}
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#">Personal geht anders.</a>
+    <a class="brand" href="../../index.html">Personal geht anders.</a>
     <nav id="nav"><a href="#">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="../Blog/index.html">Blog</a><a href="#">Kontakt</a></nav>
     <button class="burger" id="burger" aria-label="Menü">☰</button>
   </div>

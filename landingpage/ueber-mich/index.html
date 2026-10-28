@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<title>Über mich – Personal geht anders.</title>
+<title>Über mich – Strategie plant Zukunft</title>
 <meta name="description" content="Über mich: leise, laut, kreativ, lösungsorientiert.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200..800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f3f3f3; --card:#fff; --line:#e0e0e0; --ink:#000; --soft:#3d3d3d; --mute:#6b6b6b; --track:#ececec;
+  --bg:#fff; --card:#fff; --line:#e0e0e0; --ink:#000; --soft:#3d3d3d; --mute:#6b6b6b; --track:#ececec;
   --blue:#1d9bf0;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
@@ -21,7 +21,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17p
 .wrap{width:min(1040px,100% - 48px);margin-inline:auto}
 
 #bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--blue);z-index:30}
-header.top{position:sticky;top:0;z-index:20;background:rgba(243,243,243,.92);backdrop-filter:blur(10px)}
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px)}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
 nav{display:flex;gap:32px}
@@ -128,7 +128,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 @media(max-width:640px){
   .wrap{width:calc(100% - 40px)}
   .burger{display:block}
-  nav{position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:#f3f3f3;padding:4px 20px 16px;display:none;box-shadow:0 12px 24px rgba(0,0,0,.06)}
+  nav{position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:#fff;padding:4px 20px 16px;display:none;box-shadow:0 12px 24px rgba(0,0,0,.06)}
   nav.open{display:flex}
   nav a{padding:14px 0;font-size:1rem}
   .tools{gap:20px;flex-wrap:wrap}
@@ -443,7 +443,8 @@ h1.page span{color:var(--hot)}
 
 /* Einbettung in die Landingpage: Kopfzeile unsichtbar, gescrollt wird von außen */
 html{overflow:hidden;scroll-behavior:auto!important;scroll-snap-type:none!important}
-header.top{visibility:hidden;pointer-events:none}
+header.top{display:none}
+html,body{background:transparent!important}
 #bar{display:none}
 </style>
 <script>document.documentElement.classList.add("js")</script>
@@ -454,8 +455,8 @@ header.top{visibility:hidden;pointer-events:none}
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#">Personal geht anders.</a>
-    <nav id="nav"><a href="#">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="../Blog/index.html">Blog</a><a href="#">Kontakt</a></nav>
+    <a class="brand" href="../../index.html">Strategie plant Zukunft</a>
+    <nav id="nav"><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="#">Kontakt</a></nav>
     <button class="burger" id="burger" aria-label="Menü">☰</button>
   </div>
 </header>
