@@ -534,6 +534,7 @@ html,body{background:transparent!important}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <script>
 (function(){
 const err=()=>{document.getElementById('err').hidden=false;document.getElementById('load').hidden=true;};
@@ -654,7 +655,7 @@ if(muteBtn)muteBtn.addEventListener('click',()=>{
 });
 
 /* Modell laden */
-const startLoad=ab=>new T.GLTFLoader().parse(ab,'',gltf=>{
+const startLoad=ab=>(()=>{const l=new T.GLTFLoader(),d=new T.DRACOLoader();d.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');l.setDRACOLoader(d);return l})().parse(ab,'',gltf=>{
   gltf.scene.updateMatrixWorld(true);
   const wires=[];
   gltf.scene.traverse(o=>{
