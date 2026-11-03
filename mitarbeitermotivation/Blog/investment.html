@@ -124,6 +124,7 @@ blockquote cite{font-style:normal;color:var(--mute);font-size:.875rem}
 footer a{color:inherit;text-underline-offset:3px;text-decoration-color:#bbb}
 footer{padding:0 0 48px;color:var(--mute);font-size:.8125rem}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer .legal a{color:inherit;text-decoration:none}footer .legal a:hover{text-decoration:underline}
 
 @media(max-width:640px){
   .wrap{width:calc(100% - 40px)}
@@ -223,7 +224,7 @@ body{color:#1a1a1a}
 blockquote.quote{position:relative;margin:clamp(48px,7vw,88px) 0;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
 .hw{position:relative}
-.hw .ink{display:block;width:100%;max-width:450px;height:auto;overflow:visible;margin:0 auto}
+.hw .ink{display:block;width:100%;max-width:225px;height:auto;overflow:visible;margin:0 auto}
 .hw .ink path{fill:none;stroke:#3b63d8;stroke-width:5.6;stroke-linecap:round;stroke-linejoin:round}
 .hw .ink path.dry{stroke:#0e2a77;transition:stroke 1.8s ease}
 .hw .ink path.pre{transition:none}
@@ -498,7 +499,7 @@ main p,main li,.htxt p{text-wrap:pretty}
 
 
 
-<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span>Bild: <a href="https://www.freepik.com/free-photo/planting-trees-coin-pile-with-sunlight_5508861.htm" rel="noopener">jcomp – freepik.com</a></span></div></footer>
+<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span class="legal"><a href="../Infos/impressum.html">Impressum</a> · <a href="../Infos/datenschutz.html">Datenschutz</a> · <a href="../Infos/agb.html">AGB</a></span><span>Bild: <a href="https://www.freepik.com/free-photo/planting-trees-coin-pile-with-sunlight_5508861.htm" rel="noopener">jcomp – freepik.com</a></span></div></footer>
 
 <script type="application/json" id="umbruch">{"v":1,"m":{"Fragt man deutsche Unternehmer nach den |292":{"b":[[7,"d"],[13,"d"],[21,"d"],[26,"d"],[33,"d"]]},"Aber ist der Arbeitsvertrag erst einmal |380":{"b":[[7,"d"],[14,"d"],[22,"d"],[29,"d"],[33,"d"],[39,"d"],[45,"d"]]},"Zahlen Sie 100% Gehalt für 80% Leistung,|71":{"b":[[7,"d"]]},"Das kann schnell ein kleines Vermögen se|105":{"b":[[10,"d"]]},"30 Angestellte, je 3.000€ brutto, zzgl. |96":{"b":[[7,"d"]]},"Leisten Ihre Angestellten nur 80%, verli|69":{"b":[[7,"d"]]},"Dieses Problem löst sich nicht, indem Si|104":{"b":[[7,"d"],[13,"d"]]},"Der große Hebel sind die 20%. (Oder welc|72":{"b":[[8,"d"]]},"Es ist eine bewusste Entscheidung, die d|86":{"b":[[8,"d"]]},"Begeisterte Kunden, die auch weiterhin G|127":{"b":[[6,"d"],[11,"d"]]},"Alles non monetäre Anreize, die sich pos|78":{"b":[[7,"d"]]},"Motiviert zu sein alleine reicht nicht a|196":{"b":[[7,"d"],[13,"d"],[20,"d"]]},"Es beginnt mit jeder Mail, jedem Telefon|88":{"b":[[7,"d"]]},"Das bedarf eines gedanklichen Wandels, d|88":{"b":[[7,"d"]]},"Neben der vertraglich geregelten Dienstl|90":{"b":[[5,"d"]]},"Ein paar Enttäuschungen zu viel, und all|71":{"b":[[7,"d"]]},"Allerdings ist unternehmerisches Denken |88":{"b":[[6,"d"]]},"Aus diesem Grund wagen nur 5% der Mensch|240":{"b":[[8,"d"],[16,"d"],[22,"d"],[32,"d"]]},"Wer bislang nicht zu Ihrer Zufriedenheit|108":{"b":[[8,"d"]]},"Es war nie Absicht, nur ein Mangel an Mo|72":{"b":[[9,"d"]]},"Wenn Sie bis hierhin gelesen haben, wiss|84":{"b":[[8,"d"]]}}}</script>
 <script>
@@ -1006,7 +1007,7 @@ main p,main li,.htxt p{text-wrap:pretty}
       H=Math.max(H,B+16);
     });
     svg.setAttribute('viewBox','-12 -8 '+(maxW+30)+' '+(H+16));
-    svg.style.maxWidth=Math.round((maxW+30)*.46875)+'px';
+    svg.style.maxWidth=Math.round((maxW+30)*.234375)+'px';
     var segs=[], t=0, prevLine=1, prevEnd=null;
     paths.forEach(function(o){
       var L=o.el.getTotalLength(); o.L=L; o.el.style.strokeDasharray=L+' '+L;

@@ -124,6 +124,7 @@ blockquote cite{font-style:normal;color:var(--mute);font-size:.875rem}
 footer a{color:inherit;text-underline-offset:3px;text-decoration-color:#bbb}
 footer{padding:0 0 48px;color:var(--mute);font-size:.8125rem}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer .legal a{color:inherit;text-decoration:none}footer .legal a:hover{text-decoration:underline}
 
 @media(max-width:640px){
   .wrap{width:calc(100% - 40px)}
@@ -223,7 +224,7 @@ body{color:#1a1a1a}
 blockquote.quote{position:relative;margin:clamp(48px,7vw,88px) 0;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
 .hw{position:relative}
-.hw .ink{display:block;width:100%;max-width:450px;height:auto;overflow:visible;margin:0 auto}
+.hw .ink{display:block;width:100%;max-width:225px;height:auto;overflow:visible;margin:0 auto}
 .hw .ink path{fill:none;stroke:#3b63d8;stroke-width:5.6;stroke-linecap:round;stroke-linejoin:round}
 .hw .ink path.dry{stroke:#0e2a77;transition:stroke 1.8s ease}
 .hw .ink path.pre{transition:none}
@@ -481,7 +482,7 @@ main p,main li,.htxt p{text-wrap:pretty}
 
 
 
-<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span>Bild: <a href="https://www.freepik.com/free-photo/white-paper-dolls-circle_4449292.htm" rel="noopener">freepik – freepik.com</a></span></div></footer>
+<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span class="legal"><a href="../Infos/impressum.html">Impressum</a> · <a href="../Infos/datenschutz.html">Datenschutz</a> · <a href="../Infos/agb.html">AGB</a></span><span>Bild: <a href="https://www.freepik.com/free-photo/white-paper-dolls-circle_4449292.htm" rel="noopener">freepik – freepik.com</a></span></div></footer>
 
 <script type="application/json" id="umbruch">{"v":1,"m":{"Wir streben nach Anerkennung und Zugehör|80":{"b":[[6,"d"]]},"Dafür braucht es Gemeinsamkeiten, die un|64":{"b":[[6,"d"]]},"Sind wir erst einmal Teil einer Gruppe, |82":{"b":[[8,"d"]]},"Und das ist erst mal völlig normal, denn|162":{"b":[[10,"d"],[18,"d"]]},"Der Grund: es gibt außer dem Job wenig b|166":{"b":[[8,"d"],[13,"d"],[19,"d"]]},"Mann kann sich gut verstehen, ohne am gl|64":{"b":[[8,"d"]]},"Dazu gehört viel mehr, als freundlich zu|110":{"b":[[9,"d"]]},"Ein Betriebsklima ist die Idee von \"Wie |151":{"b":[[10,"d"],[16,"d"]]},"In der Geschichte der Menschheit gibt es|201":{"b":[[10,"d"],[16,"d"],[21,"d"]]},"Das Eigene wird irrational stärker wertg|94":{"b":[[6,"d"]]},"Menschen sind motivierter, wenn Sie Eige|71":{"b":[[6,"d"]]},"Sie gehen eine innere Selbstverpflichtun|92":{"b":[[6,"d"]]},"Man steht selbst in der Pflicht, wenn es|103":{"b":[[10,"d"]]},"Wer sich wie eine Marionette fühlt, hat |71":{"b":[[9,"d"]]},"So wird man gleichgültig und passiv. Von|86":{"b":[[9,"d"]]},"Tun Sie sich also selbst einen Gefallen |88":{"b":[[9,"d"]]}}}</script>
 <script>
@@ -989,7 +990,7 @@ main p,main li,.htxt p{text-wrap:pretty}
       H=Math.max(H,B+16);
     });
     svg.setAttribute('viewBox','-12 -8 '+(maxW+30)+' '+(H+16));
-    svg.style.maxWidth=Math.round((maxW+30)*.46875)+'px';
+    svg.style.maxWidth=Math.round((maxW+30)*.234375)+'px';
     var segs=[], t=0, prevLine=1, prevEnd=null;
     paths.forEach(function(o){
       var L=o.el.getTotalLength(); o.L=L; o.el.style.strokeDasharray=L+' '+L;

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>AGB – Personal geht anders.</title>
+<meta name="description" content="Allgemeine Geschäftsbedingungen von Jens Meyer, Performance Coaching: Angebote, Honorare, Terminabsage, Haftung, Vertraulichkeit und Gerichtsstand.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff; --line:#bdbdbd; --ink:#000; --soft:#3d3d3d; --mute:#6b6b6b; --unread:#9c9c9c;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display-m:700 46px/50px var(--sans);   --display-m-ls:-.03em;
+  --title-l:600 20px/26px var(--sans);     --title-l-ls:-.02em;
+  --body-l:400 16px/25px var(--sans);      --body-l-ls:0;
+  --body-s:400 13px/18px var(--sans);      --body-s-ls:0;
+  --label-l:500 14px/20px var(--sans);     --label-l-ls:0;
+  --label-m:500 12px/16px var(--sans);     --label-m-ls:.06em;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:var(--body-l);letter-spacing:var(--body-l-ls);-webkit-font-smoothing:antialiased;min-height:100svh;display:flex;flex-direction:column;overflow-anchor:none}
+.wrap{width:min(1040px,100% - 48px);margin-inline:auto}
+a{color:var(--ink);text-decoration:none}
+h1,h2,h3,nav,button,label{hyphens:none}
+
+header.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font:var(--label-l);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+nav#nav{display:flex;gap:32px}
+nav#nav a{font:var(--label-l);letter-spacing:var(--label-l-ls);color:var(--soft)}
+nav#nav a:hover{color:var(--ink)}
+.burger{display:none;background:none;border:0;width:40px;height:40px;cursor:pointer;color:var(--ink);font-size:1.3rem}
+
+.title{padding:clamp(72px,14vh,170px) 0 0}
+.title .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.kicker{font:var(--label-m);letter-spacing:var(--label-m-ls);text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.title h1{font:var(--display-m);letter-spacing:var(--display-m-ls);text-wrap:balance}
+#skip{background:none;border:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:background .2s}
+#skip:hover{background:rgba(0,0,0,.07)}
+#skip svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+#skip svg .cur{fill:currentColor}
+#skip svg .slash{opacity:0;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s,opacity .3s}
+#skip.off svg .slash{opacity:1;stroke-dashoffset:0}
+#skip:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* Abschnitte: Zeitleiste links, Text mittig zur Seite */
+.imp{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,480px) minmax(0,1fr);justify-content:center;margin-top:clamp(40px,8vh,96px);margin-bottom:clamp(48px,10vh,120px)}
+#idx{grid-column:1;grid-row:1;align-self:start;position:sticky;top:max(80px,calc(50vh - var(--ih,240px)/2));max-height:calc(100svh - 104px);overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px;padding:4px 16px 4px 4px}
+#idx::-webkit-scrollbar{display:none}
+#idx h2{position:relative;font:var(--body-l)}
+#idx h2::before{content:"";position:absolute;left:0;top:13px;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg);transition:background .3s,border-color .3s}
+#idx h2::after{content:"";position:absolute;left:4px;top:26px;bottom:-18px;width:1px;background:var(--line)}
+#idx h2:last-child::after{display:none}
+#idx h2.on::before{background:var(--ink);border-color:var(--ink)}
+#idx button{background:none;border:1.5px solid transparent;border-radius:8px;margin-left:24px;padding:3px 10px;text-align:left;cursor:pointer;font:var(--body-l);letter-spacing:var(--body-l-ls);color:var(--ink);transition:border-color .3s}
+#idx button:hover{border-color:var(--line)}
+#idx button[aria-current="true"]{border-color:var(--ink)}
+#idx button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.secs{grid-column:2;grid-row:1;padding:4px 0 clamp(24px,6vh,64px)}
+.sec{position:relative;display:none}
+.sec.active{display:block;animation:secin .4s ease}
+@keyframes secin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec .mh{display:none}
+.body > * + *{margin-top:1.1em}
+.body p{font:var(--body-l);letter-spacing:var(--body-l-ls);text-wrap:pretty}
+.body a{text-decoration:none}
+.body a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-color:#bbb}
+.addr{font-weight:500}
+.body .sub{font-weight:600;margin-top:1.5em}
+.body ul{list-style:none;display:grid;gap:4px}
+.body ul li{position:relative;padding-left:20px;font:var(--body-l);letter-spacing:var(--body-l-ls)}
+.body ul li::before{content:"";position:absolute;left:4px;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+
+/* Lesehilfe */
+.rd-on .w{color:var(--unread)}
+.rd-on .w.done{color:inherit}
+.rd-on .w.typing{color:transparent;background-image:linear-gradient(90deg,var(--ink) var(--p,0%),var(--unread) var(--p,0%));-webkit-background-clip:text;background-clip:text}
+.arrow{position:absolute;left:-20px;top:0;width:10px;height:11.5px;background:var(--ink);clip-path:polygon(0 0,100% 50%,0 100%);pointer-events:none;opacity:0;transition:transform .3s cubic-bezier(.22,.8,.2,1),opacity .2s;z-index:2}
+
+footer{margin-top:auto;padding:0 0 48px;color:var(--mute);font:var(--body-s);letter-spacing:var(--body-s-ls)}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer .legal a{color:inherit;text-decoration:none}footer .legal a:hover{text-decoration:underline}
+footer a{color:inherit}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#idx button{transition:none}.sec.active{animation:none}.rd-on .w{color:inherit!important;background:none!important}.arrow,#skip{display:none}}
+@media print{header.top,#idx,#skip,.arrow{display:none}.rd-on .w{color:#000!important;background:none!important}.imp{display:block}}
+
+@media(max-width:600px){
+  .wrap{width:calc(100% - 40px)}
+  .imp{display:block}
+  #idx{position:static;max-height:none;overflow:visible;margin-bottom:24px;padding:0}
+  #idx h2::before,#idx h2::after{display:none}
+  #idx button{margin-left:0}
+  .arrow{left:-14px}
+  .sec .mh{display:none}
+  .sec .mh button{background:none;border:0;padding:0;text-align:left;cursor:pointer;font:var(--title-l);letter-spacing:var(--title-l-ls);color:var(--ink)}
+  .secs{gap:24px}
+  .title h1{font:700 36px/40px var(--sans);letter-spacing:-.03em}
+}
+@media(max-width:640px){
+  .burger{display:block}
+  nav#nav{position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:#fff;padding:4px 20px 16px;display:none;box-shadow:0 12px 24px rgba(0,0,0,.06)}
+  nav#nav.open{display:flex}
+  nav#nav a{padding:14px 0;font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../index.html">Personal geht anders.</a>
+    <nav id="nav"><a href="../ueber-mich/variante-karten.html">Über mich</a><a href="#">Meine Garantie</a><a href="#">FAQ</a><a href="../Blog/index.html">Blog</a><a href="#">Kontakt</a></nav>
+    <button class="burger" id="burger" aria-label="Menü">☰</button>
+  </div>
+</header>
+
+<section class="title">
+  <div class="wrap">
+    <div>
+      <div class="kicker">Jens Meyer · Performance-Coaching</div>
+      <h1>Allgemeine Geschäftsbedingungen</h1>
+    </div>
+    <button id="skip" type="button" aria-label="Lese-Effekt ausschalten" aria-pressed="true" title="Lese-Effekt ausschalten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 11h9M4 16h6"/><path class="cur" d="m14 13 7 3.500-3 1-1 3z"/><path class="slash" d="M3 21 21 3"/></svg></button>
+  </div>
+</section>
+
+<main class="wrap imp">
+  <nav id="idx" aria-label="Abschnitte">
+    <h2 class="on"><button type="button" data-i="0" aria-current="true">Allgemeines</button></h2>
+    <h2><button type="button" data-i="1" aria-current="false">Hinweise bezüglich von Abmahnversuchen</button></h2>
+    <h2><button type="button" data-i="2" aria-current="false">1. Allgemeines</button></h2>
+    <h2><button type="button" data-i="3" aria-current="false">2. Angebote und Honorare</button></h2>
+    <h2><button type="button" data-i="4" aria-current="false">3. Absage eines Termins</button></h2>
+    <h2><button type="button" data-i="5" aria-current="false">4. Höhere Gewalt und sonstige Leistungshindernisse</button></h2>
+    <h2><button type="button" data-i="6" aria-current="false">5. Copyright</button></h2>
+    <h2><button type="button" data-i="7" aria-current="false">6. Versicherungsschutz</button></h2>
+    <h2><button type="button" data-i="8" aria-current="false">7. Haftung</button></h2>
+    <h2><button type="button" data-i="9" aria-current="false">8. Vertraulichkeit</button></h2>
+    <h2><button type="button" data-i="10" aria-current="false">9. Mitwirkungspflicht des/der Auftraggebers/Auftraggeberin</button></h2>
+    <h2><button type="button" data-i="11" aria-current="false">10. Schlussbestimmung</button></h2>
+    <h2><button type="button" data-i="12" aria-current="false">11. Erfüllungsort und Gerichtsstand</button></h2>
+  </nav>
+
+  <div class="secs">
+    <section class="sec active" id="s0">
+      <h2 class="mh"><button type="button" data-i="0">Allgemeines</button></h2>
+      <div class="body">
+        <p>Diese AGBs gelten für www.vonnichts-kommtnichts.de von Jens Meyer.</p>
+        <p>Die Website dient zur Information der Nutzer über Arbeit und Angebote von Jens Meyer.</p>
+        <p>Für die Geschäftsbeziehungen zwischen Jens Meyer und dem Klienten gelten ausschließlich diese AGB in ihrer zum Zeitpunkt der Angebotserstellung gültigen Fassung.</p>
+        <p>Abweichende Vereinbarungen sind nicht Vertragsbestandteil, es sei denn, der Anbieter hat ausdrücklich und schriftlich zugestimmt.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s1">
+      <h2 class="mh"><button type="button" data-i="1">Hinweise bezüglich von Abmahnversuchen</button></h2>
+      <div class="body">
+        <p>Sollten der Inhalt oder die Gestaltung dieser Seiten Rechte Dritter oder gesetzliche Bestimmungen verletzen, bitte ich um eine diesbezügliche Nachricht ohne Kostennote. Ich garantiere, dass zu Recht beanstandete Passagen oder Elemente unverzüglich entfernt oder korrigiert werden.</p>
+        <p>Eine Einschaltung eines Rechtsbeistandes ist nicht erforderlich.</p>
+        <p>Werden von Ihnen ohne vorherige Kontaktaufnahme Kosten ausgelöst, werde ich diese vollumfänglich zurückweisen und ggf. Gegenklage wegen der Verletzung der vorgenannten Bestimmungen einreichen.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s2">
+      <h2 class="mh"><button type="button" data-i="2">1. Allgemeines</button></h2>
+      <div class="body">
+        <p>Jens Meyer führt Coaching und Beratung gemäß diesen Allgemeinen Geschäftsbedingungen durch. Mit der Beauftragung gelten diese Bedingungen vom Auftraggeber (im Folgenden auch Klienten) als angenommen. Weitere Vereinbarungen sind für Jens Meyer nur verbindlich, wenn diese von ihm schriftlich bestätigt werden. Die von Jens Meyer abgeschlossenen Verträge sind Dienstverträge, sofern nicht ausdrücklich etwas anderes vereinbart wird. Gegenstand des Vertrages ist die Erbringung der vereinbarten Leistungen, nicht die Herbeiführung eines bestimmten Erfolges.</p>
+        <p>Seine Stellungnahmen und Empfehlungen bereiten die Entscheidung des Auftraggebers (des Klienten/der Klientin) vor.</p>
+        <p>Jede Entscheidung des Klienten ist eigenverantwortlich.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s3">
+      <h2 class="mh"><button type="button" data-i="3">2. Angebote und Honorare</button></h2>
+      <div class="body">
+        <p>Die Angebote sind freibleibend. Änderungen vorbehalten.</p>
+        <p>Alle Honorare verstehen sich in Euro, zzgl. der gesetzlichen Mehrwertsteuer.</p>
+        <p>Für Coachingleistungen werden die in der Coachingvereinbarung festgelegten Honorare berechnet. Eine Anfahrtpauschale ist im Voraus zu entrichten.</p>
+        <p>Die im Nachhinein gestellte Rechnung hat ein Zahlungsziel von 30&nbsp;Tagen.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s4">
+      <h2 class="mh"><button type="button" data-i="4">3. Absage eines Termins</button></h2>
+      <div class="body">
+        <p>Vereinbarte Termine sind grundsätzlich verbindlich.</p>
+        <p>Zeit und Ort des Coachings werden von den Coachingpartnern einvernehmlich vereinbart. Eine kostenfreie Absage oder Terminverschiebung der Coachingsitzungen ist bis spätestens 7&nbsp;Werktagen vor dem Termin möglich.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s5">
+      <h2 class="mh"><button type="button" data-i="5">4. Höhere Gewalt und sonstige Leistungshindernisse</button></h2>
+      <div class="body">
+        <p>Jens Meyer ist berechtigt, bei höherer Gewalt die vereinbarten Coachingtermine zu verschieben, hierunter fallen auch Leistungshindernisse, die aufgrund von Krankheit, Unfall oder ähnlichem entstanden sind.</p>
+        <p>In diesem Fall wird der Coach den Klienten schnellstmöglich verständigen und einen Ersatztermin anbieten.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s6">
+      <h2 class="mh"><button type="button" data-i="6">5. Copyright</button></h2>
+      <div class="body">
+        <p>Alle an den Klienten ausgehändigten Unterlagen sind, soweit nichts anderes vereinbart, in der vereinbarten Vergütung enthalten, und sind zum persönlichen Gebrauch des Klienten bestimmt. Das Urheberrecht an den Coachingkonzepten und Unterlagen gehört allein Jens Meyer. Dem Klienten ist es nicht gestattet, die Unterlagen ohne schriftliche Zustimmung von Jens Meyer ganz oder auszugsweise zu reproduzieren und/oder Dritten zugänglich zu machen. Eine Veröffentlichung, auch auszugsweise, ist untersagt.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s7">
+      <h2 class="mh"><button type="button" data-i="7">6. Versicherungsschutz</button></h2>
+      <div class="body">
+        <p>Jeder Klient trägt die volle Verantwortung für sich und seine Handlungen innerhalb und außerhalb des Coachings und kommt für eventuell verursachte Schäden selbst auf. Das Coaching ist keine Psychotherapie und kann diese nicht ersetzen. Die Teilnahme setzt eine normale psychische und physische Belastbarkeit voraus. Veranstalter von Workshops und Gruppencoachings ist immer der Auftraggeber.</p>
+        <p>Die Teilnehmer haben deshalb keinen Versicherungsschutz durch Jens Meyer.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s8">
+      <h2 class="mh"><button type="button" data-i="8">7. Haftung</button></h2>
+      <div class="body">
+        <p>Die Informationen und Ratschläge in Workshops und Coachings sowie in allen Dokumentationen, sind durch den Coach sorgfältig erwogen und geprüft. Bei der Tätigkeit von Jens Meyer handelt es sich um eine reine Dienstleistungstätigkeit, ein Erfolg ist daher nicht geschuldet.</p>
+        <p>Eine Haftung wird ausgeschlossen.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s9">
+      <h2 class="mh"><button type="button" data-i="9">8. Vertraulichkeit</button></h2>
+      <div class="body">
+        <p>Jens Meyer verpflichtet sich, über alle im Rahmen der Tätigkeit bekannt gewordenen betrieblichen, geschäftlichen und privaten Angelegenheiten des Klienten auch nach der Beendigung des Vertrages Stillschweigen gegenüber Dritten zu bewahren.</p>
+        <p>Darüber hinaus verpflichtet sich Jens Meyer, die zum Zwecke der Beratertätigkeit überlassenen Unterlagen sorgfältig zu verwahren und gegen Einsichtnahme Dritter zu schützen.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s10">
+      <h2 class="mh"><button type="button" data-i="10">9. Mitwirkungspflicht des/der Auftraggebers/Auftraggeberin</button></h2>
+      <div class="body">
+        <p>Das Coaching erfolgt auf Grundlage der zwischen den Parteien geführten vorbereitenden Gespräche. Es beruht auf Kooperation und gegenseitigem Vertrauen. Jens Meyer steht dem Klienten als Prozessbegleiter und als Unterstützung bei Entscheidungen und Veränderungen zur Seite – die eigentliche Veränderungsarbeit wird vom Klienten geleistet. Der Klient sollte daher bereit und offen sein, sich mit sich selbst und seiner Situation auseinanderzusetzen.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s11">
+      <h2 class="mh"><button type="button" data-i="11">10. Schlussbestimmung</button></h2>
+      <div class="body">
+        <p>Sollten einzelne Bestimmungen des Vertrages mit dem Klienten einschließlich dieser Allgemeinen Geschäftsbedingungen ganz oder teilweise unwirksam sein oder werden, so wird hierdurch die Gültigkeit der übrigen Bestimmungen nicht berührt. Die ganz oder teilweise unwirksame Regelung soll durch eine Regelung ersetzt werden, deren wirtschaftlicher Erfolg dem der unwirksamen möglichst nahekommt.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s12">
+      <h2 class="mh"><button type="button" data-i="12">11. Erfüllungsort und Gerichtsstand</button></h2>
+      <div class="body">
+        <p>Erfüllungsort ist Deutschland, Österreich und Schweiz.</p>
+        <p>Gerichtsstand ist das zuständige Amtsgericht Hamburg.</p>
+        <p>Es gilt das Recht der Bundesrepublik Deutschland.</p>
+        <p>Hamburg, 17.08.2018</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span class="legal"><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="agb.html">AGB</a></span><span></span></div></footer>
+
+<script>
+(function(){
+  var nav=document.getElementById('nav');
+  document.getElementById('burger').onclick=function(){nav.classList.toggle('open')};
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var secs=[].slice.call(document.querySelectorAll('.sec'));
+  var idx=document.getElementById('idx');
+  var secsBox=document.querySelector('.secs');
+  var heads=[].slice.call(idx.querySelectorAll('h2'));
+  var btns=[].slice.call(idx.querySelectorAll('button'));
+  var skip=document.getElementById('skip');
+  var effect=!reduce;
+  var cur=0, token=0;
+  var CPS=140; // Zeichen pro Sekunde
+
+  /* Wörter in Spans, damit die Lesehilfe Zeile für Zeile arbeiten kann */
+  secs.forEach(function(sec){
+    var words=[];
+    (function walk(n){
+      [].slice.call(n.childNodes).forEach(function(c){
+        if(c.nodeType===3){
+          var parts=c.nodeValue.split(/([ \t\n]+)/), f=document.createDocumentFragment();
+          parts.forEach(function(p){
+            if(!p) return;
+            if(/^[ \t\n]+$/.test(p)){ f.appendChild(document.createTextNode(' ')); return }
+            var s=document.createElement('span'); s.className='w'; s.textContent=p; f.appendChild(s); words.push(s);
+          });
+          c.parentNode.replaceChild(f,c);
+        }else if(c.nodeType===1 && c.tagName!=='BR'){ walk(c) }
+      });
+    })(sec.querySelector('.body'));
+    sec._words=words;
+    var ar=document.createElement('i'); ar.className='arrow'; ar.setAttribute('aria-hidden','true'); sec.appendChild(ar); sec._arrow=ar;
+  });
+
+  function measure(){
+    idx.style.setProperty('--ih',idx.offsetHeight+'px');
+  }
+
+  function stopReading(sec){
+    if(!sec||!sec._run) return;
+    sec._run=false; cancelAnimationFrame(sec._raf);
+    sec._words.forEach(function(w){ w.classList.remove('typing'); w.classList.add('done') });
+    sec._arrow.style.opacity=0;
+    sec._read=true;
+  }
+
+  function startReading(sec){
+    if(!effect||sec._read){ sec.classList.remove('rd-on'); return }
+    var words=sec._words;
+    sec.classList.add('rd-on');
+    words.forEach(function(w){ w.classList.remove('done','typing') });
+    // Zeilen über die Höhe der Wörter bestimmen
+    var lines=[], lastTop=null;
+    words.forEach(function(w,k){
+      var t=w.offsetTop;
+      if(lastTop===null||Math.abs(t-lastTop)>4){ lines.push({top:t,first:k}); lastTop=t }
+    });
+    var cum=[], total=0;
+    words.forEach(function(w){ cum.push(total); total+=w.textContent.length+1 });
+    sec._run=true;
+    var t0=null, my=++token;
+    sec._token=my;
+    var arrow=sec._arrow;
+    function frame(ts){
+      if(!sec._run||sec._token!==my) return;
+      if(t0===null) t0=ts;
+      var pos=(ts-t0)/1000*CPS;
+      var li=0;
+      for(var k=0;k<words.length;k++){
+        var w=words[k], len=w.textContent.length;
+        if(pos>=cum[k]+len){ w.classList.remove('typing'); w.classList.add('done') }
+        else if(pos>cum[k]){ w.classList.add('typing'); w.style.setProperty('--p',((pos-cum[k])/len*100)+'%'); li=k; break }
+        else { li=k; break }
+      }
+      var line=lines[0];
+      lines.forEach(function(l){ if(l.first<=li) line=l });
+      arrow.style.transform='translateY('+(line.top+6)+'px)';
+      arrow.style.opacity=1;
+      if(pos>=total){ stopReading(sec); return }
+      sec._raf=requestAnimationFrame(frame);
+    }
+    sec._raf=requestAnimationFrame(frame);
+  }
+
+  function setActive(i){
+    if(secs[cur]!==secs[i]) stopReading(secs[cur]);
+    secs.forEach(function(s,k){ s.classList.toggle('active',k===i) });
+    btns.forEach(function(b,k){ b.setAttribute('aria-current',k===i?'true':'false') });
+    heads.forEach(function(h,k){ h.classList.toggle('on',k===i) });
+    var hd=heads[i];
+    if(hd.offsetTop<idx.scrollTop||hd.offsetTop+hd.offsetHeight>idx.scrollTop+idx.clientHeight) idx.scrollTop=hd.offsetTop-idx.clientHeight/2;
+    cur=i;
+  }
+
+  function go(i){
+    if(i===cur) return;
+    setActive(i);
+    var top=document.querySelector('.imp').getBoundingClientRect().top+window.scrollY-96;
+    if(window.scrollY>top) window.scrollTo({top:Math.max(0,top),behavior:reduce?'auto':'smooth'});
+    setTimeout(function(){ startReading(secs[i]) },reduce?0:120);
+  }
+
+  [].slice.call(document.querySelectorAll('button[data-i]')).forEach(function(b){
+    b.addEventListener('click',function(){ go(+b.getAttribute('data-i')) });
+  });
+
+  skip.addEventListener('click',function(){
+    effect=!effect;
+    skip.classList.toggle('off',!effect);
+    skip.setAttribute('aria-pressed',effect?'true':'false');
+    var label=effect?'Lese-Effekt ausschalten':'Lese-Effekt einschalten';
+    skip.setAttribute('aria-label',label); skip.title=label;
+    if(!effect){ secs.forEach(function(s){ stopReading(s); s.classList.remove('rd-on') }) }
+    else{ var s=secs[cur]; s._read=false; s._run=false; startReading(s) }
+  });
+  if(reduce){ skip.classList.add('off'); skip.setAttribute('aria-pressed','false') }
+
+  // Start: erster Abschnitt offen; sofort grau, damit nichts aufblitzt
+  if(effect) secs[0].classList.add('rd-on');
+  measure();
+  window.addEventListener('resize',function(){ measure(); });
+  var started=false;
+  function begin(){ if(started) return; started=true; measure(); startReading(secs[0]) }
+  if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(begin); setTimeout(begin,1500) } else begin();
+})();
+</script>
+</body>
+</html>

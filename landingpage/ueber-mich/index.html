@@ -223,7 +223,7 @@ body{color:#1a1a1a}
 blockquote.quote{position:relative;margin:clamp(48px,7vw,88px) 0;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
 .hw{position:relative}
-.hw .ink{display:block;width:100%;max-width:450px;height:auto;overflow:visible;margin:0 auto}
+.hw .ink{display:block;width:100%;max-width:225px;height:auto;overflow:visible;margin:0 auto}
 .hw .ink path{fill:none;stroke:#3b63d8;stroke-width:5.6;stroke-linecap:round;stroke-linejoin:round}
 .hw .ink path.dry{stroke:#0e2a77;transition:stroke 1.8s ease}
 .hw .ink path.pre{transition:none}
@@ -1267,7 +1267,7 @@ requestAnimationFrame(frame);
       H=Math.max(H,B+16);
     });
     svg.setAttribute('viewBox','-12 -8 '+(maxW+30)+' '+(H+16));
-    svg.style.maxWidth=Math.round((maxW+30)*.46875)+'px';
+    svg.style.maxWidth=Math.round((maxW+30)*.234375)+'px';
     var segs=[], t=0, prevLine=2, prevEnd=null;
     paths.forEach(function(o){
       var L=o.el.getTotalLength(); o.L=L; o.el.style.strokeDasharray=L+' '+L;

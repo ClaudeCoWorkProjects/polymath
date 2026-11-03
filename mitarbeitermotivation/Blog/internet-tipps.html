@@ -124,6 +124,7 @@ blockquote cite{font-style:normal;color:var(--mute);font-size:.875rem}
 footer a{color:inherit;text-underline-offset:3px;text-decoration-color:#bbb}
 footer{padding:0 0 48px;color:var(--mute);font-size:.8125rem}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+footer .legal a{color:inherit;text-decoration:none}footer .legal a:hover{text-decoration:underline}
 
 @media(max-width:640px){
   .wrap{width:calc(100% - 40px)}
@@ -223,7 +224,7 @@ body{color:#1a1a1a}
 blockquote.quote{position:relative;margin:clamp(48px,7vw,88px) 0;padding:0}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
 .hw{position:relative}
-.hw .ink{display:block;width:100%;max-width:450px;height:auto;overflow:visible;margin:0 auto}
+.hw .ink{display:block;width:100%;max-width:225px;height:auto;overflow:visible;margin:0 auto}
 .hw .ink path{fill:none;stroke:#3b63d8;stroke-width:5.6;stroke-linecap:round;stroke-linejoin:round}
 .hw .ink path.dry{stroke:#0e2a77;transition:stroke 1.8s ease}
 .hw .ink path.pre{transition:none}
@@ -494,7 +495,7 @@ main p,main li,.htxt p{text-wrap:pretty}
 
 
 
-<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span>Bild: <a href="https://www.freepik.com/free-psd/man-with-raised-hands_938232.htm" rel="noopener">kues – freepik.com</a></span></div></footer>
+<footer><div class="wrap"><span>© Personal geht anders. · vonnichts-kommtnichts.de</span><span class="legal"><a href="../Infos/impressum.html">Impressum</a> · <a href="../Infos/datenschutz.html">Datenschutz</a> · <a href="../Infos/agb.html">AGB</a></span><span>Bild: <a href="https://www.freepik.com/free-psd/man-with-raised-hands_938232.htm" rel="noopener">kues – freepik.com</a></span></div></footer>
 
 <script type="application/json" id="umbruch">{"v":1,"m":{"Google: Wie motiviert man Mitarbeiter? W|152":{"b":[[8,"d"],[15,"d"]]},"Vergleichen Sie die ersten 10 Suchergebn|105":{"b":[[6,"d"]]},"Was Ihnen das Internet bieten kann, sind|132":{"b":[[7,"d"],[13,"d"]]},"Kurz: Kann klappen, oder auch nicht. Und|153":{"b":[[8,"d"],[16,"d"]]},"Wäre es so einfach, das Thema kurz zu go|88":{"b":[[9,"d"]]},"Umfragen bestätigen das Gegenteil: Es gi|86":{"b":[[6,"d"]]},"Deswegen liegt mein Schwerpunkt darauf, |88":{"b":[[6,"d"]]},"Sobald Sie verstehen, wie man Menschen m|80":{"b":[[7,"d"]]},"Es gibt durchaus Webseiten und Bücher, d|64":{"b":[[6,"d"]]},"Aber können Sie theoretische Erkenntniss|93":{"b":[[7,"d"]]},"Solange Sie nicht wissen was, und wie Si|76":{"b":[[9,"d"]]},"Denn es ist nicht nur entscheidend, WAS |86":{"b":[[9,"d"]]},"Hier finden Sie gut recherchierte Tipps |73":{"b":[[6,"d"]]}}}</script>
 <script>
@@ -999,7 +1000,7 @@ main p,main li,.htxt p{text-wrap:pretty}
       H=Math.max(H,B+16);
     });
     svg.setAttribute('viewBox','-12 -8 '+(maxW+30)+' '+(H+16));
-    svg.style.maxWidth=Math.round((maxW+30)*.46875)+'px';
+    svg.style.maxWidth=Math.round((maxW+30)*.234375)+'px';
     var segs=[], t=0, prevLine=1, prevEnd=null;
     paths.forEach(function(o){
       var L=o.el.getTotalLength(); o.L=L; o.el.style.strokeDasharray=L+' '+L;
