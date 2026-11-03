@@ -38,7 +38,7 @@
   #cube-stage.dragging { cursor:grabbing; }
   #cube-stage canvas { display:block; width:100%; height:100%; }
   .cube-wrap { display:flex; flex-direction:column; align-items:center; gap:1rem; }
-  #cube-shuffle { background:transparent; color:#444; border:1px solid #d4d4d4; border-radius:999px; padding:.55rem 1.4rem;
+  #cube-shuffle { margin-top:-2.5rem; background:transparent; color:#444; border:1px solid #d4d4d4; border-radius:999px; padding:.55rem 1.4rem;
                   font:inherit; font-size:.9rem; letter-spacing:.02em; cursor:pointer; transition:border-color .2s, color .2s, opacity .2s; }
   #cube-shuffle:hover { color:#000; border-color:#888; }
   #cube-shuffle:disabled { opacity:.35; cursor:default; }
@@ -50,13 +50,21 @@
   #cube-entry input { width:4.2em; background:#fff; color:#000; border:1px solid #ccc; border-radius:8px; padding:.45rem .5rem;
                       font:inherit; font-size:1rem; letter-spacing:.3em; text-align:center; text-transform:uppercase; }
   #cube-entry button { background:#111; color:#fff; border:1px solid #111; border-radius:8px; padding:.45rem .9rem; font:inherit; cursor:pointer; }
-  .cube-board { width:100%; max-width:260px; }
+  .cube-board { width:100%; max-width:260px; margin-top:-.6rem; }
   .cube-board h3 { font-size:.75rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:#888; margin-bottom:.5rem; text-align:center; }
   #cube-highscores { list-style:none; padding:0; font-size:.88rem; font-variant-numeric:tabular-nums; }
   #cube-highscores li { display:grid; grid-template-columns:1.8em 1fr auto; gap:.5rem; padding:.3rem .2rem; border-bottom:1px solid #ececec; color:#444; }
   #cube-highscores li span:first-child { color:#aaa; }
   #cube-highscores li.new { color:#000; font-weight:600; }
   #cube-highscores li.empty { display:block; text-align:center; color:#aaa; border:0; }
+
+  /* Hover-Hinweis: Linksklick = im Uhrzeigersinn, Rechtsklick = dagegen */
+  #cube-hint { pointer-events:none; opacity:.35; transition:opacity .2s; display:flex; align-items:center; gap:.9rem; color:#111; }
+  #cube-hint .row { display:flex; align-items:center; gap:.25rem; }
+  #cube-hint svg { display:block; }
+  #cube-hint .row svg:first-child { width:11px; height:15px; }
+  #cube-hint .row svg:last-child { width:17px; height:17px; }
+  @media (hover:none) { #cube-hint { display:none; } }
 
   @media (max-width:800px) { .hero { grid-template-columns:1fr; } .copy { aspect-ratio:auto; max-height:none; } }
 
@@ -71,6 +79,7 @@
   [data-theme="dark"] .hero { background:radial-gradient(ellipse at 70% 30%, #161616 0%, #050505 60%); }
   [data-theme="dark"] #theme-toggle { border-color:#2a2a2a; }
   [data-theme="dark"] #theme-toggle span.on { background:#ededed; color:#000; }
+  [data-theme="dark"] #cube-hint { color:#ededed; }
   [data-theme="dark"] #cube-shuffle { color:#bdbdbd; border-color:#2a2a2a; }
   [data-theme="dark"] #cube-shuffle:hover { color:#fff; border-color:#555; }
   [data-theme="dark"] #cube-counter { color:#8a8a8a; }
@@ -89,6 +98,18 @@
 </head>
 <body>
 <button id="theme-toggle" type="button" aria-label="Farbschema wechseln"><span data-t="light">Weiß</span><span data-t="dark">Schwarz</span></button>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ico-mouse" viewBox="0 0 16 22">
+      <rect x="1" y="1" width="14" height="20" rx="7" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M8 1v8M1 9h14" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="ico-turn" viewBox="0 0 24 24">
+      <path d="M12 4A8 8 0 1 1 4.5 9.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M0-3.6L3.4 3H-3.4Z" fill="currentColor" transform="translate(4.5 9.3) rotate(20)"/>
+    </symbol>
+  </defs>
+</svg>
 <section class="hero">
   <div class="copy">
     <h1>Jedes Problem<br>ist lösbar.</h1>
@@ -104,6 +125,16 @@
   <div class="cube-wrap">
     <div id="cube-stage"></div>
     <button id="cube-shuffle" type="button">Mischen</button>
+    <div id="cube-hint" aria-hidden="true">
+      <div class="row" title="Klick: im Uhrzeigersinn">
+        <svg width="16" height="22"><use href="#ico-mouse"/><path d="M8 1.7A6.3 6.3 0 0 0 1.7 8V9H8Z" fill="currentColor"/></svg>
+        <svg width="26" height="26"><use href="#ico-turn"/></svg>
+      </div>
+      <div class="row" title="Rechtsklick: dagegen">
+        <svg width="16" height="22"><use href="#ico-mouse"/><path d="M8 1.7A6.3 6.3 0 0 1 14.3 8V9H8Z" fill="currentColor"/></svg>
+        <svg width="26" height="26" style="transform:scaleX(-1)"><use href="#ico-turn"/></svg>
+      </div>
+    </div>
     <div id="cube-counter"></div>
     <form id="cube-entry" hidden>
       <span id="cube-entry-text"></span>
@@ -509,7 +540,8 @@ stage.addEventListener('pointerdown', e => {
     const rootQinv = root.getWorldQuaternion(new THREE.Quaternion()).invert();
     const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld).applyQuaternion(rootQinv);
     drag = { mode:'layer', x0:e.clientX, y0:e.clientY, p:root.worldToLocal(hit.point.clone()),
-             nAxis:dominant(n), nSign:Math.sign(n.getComponent(dominant(n))), cubie:hit.object, done:false };
+             nAxis:dominant(n), nSign:Math.sign(n.getComponent(dominant(n))), cubie:hit.object, done:false,
+             ccw:e.shiftKey || e.button === 2 };
   } else {
     drag = { mode:'view', x:e.clientX, y:e.clientY };
   }
@@ -541,11 +573,12 @@ stage.addEventListener('pointermove', e => {
 
 function endDrag() {
   if (drag && drag.mode === 'layer' && !drag.done) {
-    // Klick: angeklickte Seite im Uhrzeigersinn drehen
-    queue.push({ axis:drag.nAxis, layer:drag.nSign, angle:-drag.nSign * Math.PI / 2 });
+    // Klick: angeklickte Seite im Uhrzeigersinn drehen, mit Rechtsklick oder Shift dagegen
+    queue.push({ axis:drag.nAxis, layer:drag.nSign, angle:(drag.ccw ? 1 : -1) * drag.nSign * Math.PI / 2 });
   }
   drag = null; stage.classList.remove('dragging');
 }
+stage.addEventListener('contextmenu', e => e.preventDefault());
 stage.addEventListener('pointerup', endDrag);
 stage.addEventListener('pointercancel', endDrag);
 

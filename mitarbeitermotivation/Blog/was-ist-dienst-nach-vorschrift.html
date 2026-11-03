@@ -215,6 +215,7 @@ html{scroll-snap-type:y proximity}
 .cl.off{white-space:normal}
 br.bk{display:none}
 br.bk.on{display:inline}
+h1,h2,h3,h4,h5,h6,nav,button,label{hyphens:none;-webkit-hyphens:none}
 /* prose-style colour steps: headlines black, body slightly softer, notes grey; no italics */
 body{color:#1a1a1a}
 .label h2,.body .lead,.body .ask,.col h3,blockquote p,.ph h1{color:#000}
@@ -558,6 +559,10 @@ main p,main li,.htxt p{text-wrap:pretty}
   (function(){
     var CONN='um|zu|weil|daher|deshalb|deswegen|darum|dass|damit|denn|und|oder|sowie|aber|sondern|wenn|falls|als|ob|obwohl|w\u00e4hrend|bevor|nachdem|sodass|zudem|bis|da|wie|nicht|kein|keine|keinen|keinem|keiner|der|die|das|den|dem|des|ein|eine|einen|einem|einer|eines|in|im|an|am|auf|aus|bei|mit|nach|von|vom|vor|zum|zur|f\u00fcr|\u00fcber|unter|durch|ohne|gegen|ins|&';
     var re=new RegExp('^[(\u201e"\u201c\u00bb]*(?:'+CONN+')$','i');
+    // numbers stay with their unit and multi-part abbreviations stay together (DIN 5008); couplings with digits or one capital letter (2-Tages-Grippe, E-Mail) cannot break at the hyphen
+    var NUMW=/^[(\u201e"\u201c\u00bb]*\d+(?:[.,:]\d+)*%?$/, ABB=/^(?:ca|Nr|Dr|Prof|vgl|ggf|evtl|inkl|zzgl|bzw)\.$/, INI=/^\(?[A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc]{1,2}\.$/;
+    var cplT=/\d-|-\d|^[(\u201e"\u201c\u00bb]*[A-Z]-[A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df]/;
+    function glue(w,nx){ return re.test(w)||NUMW.test(w)||ABB.test(w)||(INI.test(w)&&INI.test(nx)) }
     var hy=/([A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9])-(?=[A-Za-z\u00c4\u00d6\u00dc\u00e4\u00f6\u00fc\u00df0-9])/g;
     document.querySelectorAll('.rd,.label h2,.ph h1,.col h3,.sum h3,.q span').forEach(function(root){
       var head=root.matches('.lead,.ask,h3,h2,h1,.q span');
@@ -565,9 +570,9 @@ main p,main li,.htxt p{text-wrap:pretty}
         Array.from(node.childNodes).forEach(function(n){
           if(n.nodeType===3){
             var v=n.nodeValue;
-            v=v.replace(/(\S+)(\s+)(?=\S)/g,function(m,w){ return re.test(w)?w+'\u00a0':m });
-            if(n.nextSibling) v=v.replace(/(\S+)\s+$/,function(m,w){ return re.test(w)?w+'\u00a0':m });
-            if(head) v=v.replace(hy,'$1\u2011');
+            v=v.replace(/(\S+)(\s+)(?=(\S+))/g,function(m,w,s,nx){ return glue(w,nx)?w+'\u00a0':m });
+            if(n.nextSibling) v=v.replace(/(\S+)\s+$/,function(m,w){ return glue(w,'')?w+'\u00a0':m });
+            v=head?v.replace(hy,'$1\u2011'):v.replace(/\S+/g,function(t){ return cplT.test(t)?t.replace(/-/g,'\u2011'):t });
             if(v!==n.nodeValue) n.nodeValue=v;
           } else if(n.nodeType===1) walk(n);
         });
@@ -598,7 +603,7 @@ main p,main li,.htxt p{text-wrap:pretty}
   var UMB=(function(){
     var el=document.getElementById('umbruch'), data={v:1,m:{}}, roots=[];
     try{ if(el){ var j=JSON.parse(el.textContent); if(j&&j.m) data=j } }catch(e){}
-    function norm(s){ return s.replace(/[\s\u00a0]+/g,' ').trim() }
+    function norm(s){ return s.replace(/[\s\u00a0]+/g,' ').replace(/\u2011/g,'-').trim() }
     function cls(){ var w=innerWidth; return w<=560?'h':w<=860?'t':'d' }
     document.querySelectorAll('.rd').forEach(function(r){
       var t=norm(r.textContent), k=t.slice(0,40)+'|'+t.length, n=0;
