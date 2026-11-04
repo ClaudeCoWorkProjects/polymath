@@ -90,8 +90,11 @@ footer a{color:inherit}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#idx button{transition:none}.sec.active{animation:none}.rd-on .w{color:inherit!important;background:none!important}.arrow,#skip{display:none}}
 @media print{header.top,#idx,#skip,.arrow{display:none}.rd-on .w{color:#000!important;background:none!important}.imp{display:block}}
 
-@media(max-width:600px){
-  .wrap{width:calc(100% - 40px)}
+/* Aufklappliste auf allen Breiten: mittig, untereinander */
+@media(min-width:0px){
+  .wrap{width:min(1040px,100% - 48px)}
+  .imp{max-width:680px;margin-inline:auto;width:calc(100% - 48px)}
+  #idx .body{max-width:480px}
   .imp{display:block}
   #idx{position:static;max-height:none;overflow:visible;margin-bottom:24px;padding:0}
   #idx h2::before,#idx h2::after{display:none}
@@ -307,7 +310,7 @@ blockquote.quote{text-align:center}
   var skip=document.getElementById('skip');
   var effect=!reduce;
   var cur=0, token=0;
-  var mq=window.matchMedia('(max-width:600px)');
+  var mq=window.matchMedia('all');
   var CPS=140; // Zeichen pro Sekunde
 
   /* Wörter in Spans, damit die Lesehilfe Zeile für Zeile arbeiten kann */
