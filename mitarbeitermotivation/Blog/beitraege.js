@@ -121,5 +121,21 @@ window.BEITRAEGE = [
     href: 'internet-tipps.html',
     img: 'hero-internet-tipps.jpg',
     min: 4
+  },
+  {
+    title: 'Should is stay or should i go?',
+    teaser: 'Ein Perspektivenwechsel.',
+    tags: ['Recruiting', 'Betriebsklima'],
+    href: 'warum-ausgerechnet-sie.html',
+    img: 'hero-warum-ausgerechnet-sie.jpg',
+    min: 4
+  },
+  {
+    title: 'Machen Sie doch was Sie wollen.',
+    teaser: 'War es Ihr Traum zu kontrollieren?',
+    tags: ['Performance', 'Führung'],
+    href: 'abwesenheitspflicht.html',
+    img: 'hero-abwesenheitspflicht.jpg',
+    min: 5
   }
 ];
