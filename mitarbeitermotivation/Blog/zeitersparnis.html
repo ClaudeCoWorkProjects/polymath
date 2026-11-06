@@ -166,6 +166,26 @@ article section#s5::after{display:none}
 article .g{border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:uhrgrund 8s linear infinite}
 }
 @keyframes uhrgrund{0%{background-color:rgba(222,236,81,0);box-shadow:0 0 0 3px rgba(222,236,81,0)}1.25%,11.25%{background-color:#deec51;box-shadow:0 0 0 3px #deec51}12.5%,100%{background-color:rgba(222,236,81,0);box-shadow:0 0 0 3px rgba(222,236,81,0)}}
+
+.burger{display:none}
+@media (max-width:640px){
+header.top .burger{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;border:0;background:none;color:#fff;cursor:pointer;padding:0}
+header.top.solid .burger,header.top.menu .burger{color:#111}
+.burger svg{width:26px;height:26px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+header.top.menu{background:#fff}
+header.top.menu .brand{color:#111}
+header.top nav{display:none;position:fixed;top:64px;left:12px;right:12px;flex-direction:column;align-items:stretch;gap:0;padding:8px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+header.top.menu nav{display:flex}
+header.top nav a{padding:14px 16px!important;font-size:17px;border-radius:10px}
+header.top nav a:not(:last-child){color:#111!important}
+header.top nav a:last-child{margin:6px 8px 8px;align-self:flex-start}
+.figure{margin-bottom:84px}
+.pill{--pl:14px;height:auto;min-height:72px;bottom:-60px;padding:40px 14px 12px 22px;border-radius:32px;align-items:flex-start}
+.pill p{font-size:17px;line-height:1.35}
+blockquote.quote{padding:26px 20px 24px}
+blockquote.quote p{font-size:24px;max-width:100%;overflow-wrap:anywhere}
+.frame img{object-position:70% 50%}
+}
 </style>
 </head>
 <body>
@@ -174,7 +194,8 @@ article .g{border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-b
 <header class="top" id="top">
   <div class="wrap">
     <a class="brand" href="../../index.html">Personal geht anders.</a>
-    <nav aria-label="Hauptnavigation"><a href="../../mitarbeitermotivation/ueber-mich/variante-karten.html">Über mich</a><a href="../../teamperformance/garantie.html">Meine Garantie</a><a href="#">FAQ</a><a href="../../mitarbeitermotivation/Blog/index.html" aria-current="page">Blog</a><a href="#">Kontakt</a></nav>
+    <nav id="nav" aria-label="Hauptnavigation"><a href="../../mitarbeitermotivation/ueber-mich/variante-karten.html">Über mich</a><a href="../../teamperformance/garantie.html">Meine Garantie</a><a href="#">FAQ</a><a href="../../mitarbeitermotivation/Blog/index.html" aria-current="page">Blog</a><a href="#">Kontakt</a></nav>
+    <button class="burger" id="burger" type="button" aria-label="Menü" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
 
@@ -391,6 +412,16 @@ article .g{border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-b
   var to;function later(){clearTimeout(to);to=setTimeout(run,120)}
   if(img.complete)run();else img.addEventListener('load',run);
   addEventListener('resize',later);
+})();
+</script>
+<script>
+(function(){
+  var h=document.getElementById('top'),b=document.getElementById('burger');if(!h||!b)return;
+  function set(o){h.classList.toggle('menu',o);b.setAttribute('aria-expanded',o?'true':'false')}
+  b.addEventListener('click',function(){set(!h.classList.contains('menu'))});
+  [].forEach.call(h.querySelectorAll('nav a'),function(a){a.addEventListener('click',function(){set(false)})});
+  addEventListener('resize',function(){if(innerWidth>640)set(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false)});
 })();
 </script>
 </body>
